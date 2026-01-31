@@ -77,7 +77,7 @@ export default function Footer() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-sm font-medium mb-4"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 dark:bg-accent/20 text-accent-dark dark:text-accent text-sm font-medium mb-4"
             >
               <Mail className="w-4 h-4" />
               {T.footer_newsletter}
@@ -88,7 +88,7 @@ export default function Footer() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3"
+              className="text-2xl md:text-3xl font-serif font-bold text-gray-900 dark:text-white mb-3"
             >
               {lang === "fr" ? "Restez informé" : "Stay in the loop"}
             </motion.h3>
@@ -117,14 +117,14 @@ export default function Footer() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={T.footer_email_placeholder}
-                  className="w-full px-5 py-3.5 rounded-xl bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-violet-500 transition-colors"
+                  className="w-full px-5 py-3.5 rounded-xl bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-accent transition-colors"
                 />
               </div>
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 type="submit"
-                className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-100 text-white dark:text-gray-900 font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-shadow"
+                className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-luxury-charcoal to-luxury-wine dark:from-accent dark:to-accent-light text-white dark:text-luxury-noir font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-shadow"
               >
                 {subscribed ? (
                   lang === "fr" ? "Merci !" : "Thanks!"
@@ -146,7 +146,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-4">
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-gray-900 to-gray-700 dark:from-white dark:to-gray-200 flex items-center justify-center text-white dark:text-gray-900 font-bold shadow-lg">
+              <div className="w-11 h-11 rounded-xl bg-luxury-charcoal dark:bg-accent flex items-center justify-center text-accent dark:text-luxury-noir font-serif font-bold shadow-lg border border-accent/20">
                 LM
               </div>
               <div>
@@ -167,15 +167,15 @@ export default function Footer() {
 
             <div className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
               <div className="flex items-center gap-3">
-                <MapPin className="w-4 h-4 text-violet-500" />
+                <MapPin className="w-4 h-4 text-accent" />
                 <span>Montreal, QC, Canada</span>
               </div>
               <div className="flex items-center gap-3">
-                <Mail className="w-4 h-4 text-violet-500" />
+                <Mail className="w-4 h-4 text-accent" />
                 <span>contact@luxemode.com</span>
               </div>
               <div className="flex items-center gap-3">
-                <Phone className="w-4 h-4 text-violet-500" />
+                <Phone className="w-4 h-4 text-accent" />
                 <span>+1 (514) 555-0123</span>
               </div>
             </div>
@@ -187,7 +187,7 @@ export default function Footer() {
                   href={social.href}
                   whileHover={{ scale: 1.1, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-violet-100 dark:hover:bg-violet-900/30 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+                  className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-accent/10 dark:hover:bg-accent/20 hover:text-accent dark:hover:text-accent transition-colors"
                   aria-label={social.label}
                 >
                   <social.icon className="w-5 h-5" />
@@ -207,7 +207,7 @@ export default function Footer() {
                   <li key={link.label}>
                     <Link
                       to={link.to}
-                      className="text-gray-600 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+                      className="text-gray-600 dark:text-gray-400 hover:text-accent dark:hover:text-accent transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -224,7 +224,7 @@ export default function Footer() {
         <div className="container-luxe py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-600 dark:text-gray-400">
             <p>
-              © 2025 {T.brand}. {T.footer_copyright}
+              © 2026 {T.brand}. {T.footer_copyright}
             </p>
             <p className="flex items-center gap-1">
               {T.footer_made_by}{" "}

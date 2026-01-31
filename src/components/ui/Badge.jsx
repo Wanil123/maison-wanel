@@ -2,11 +2,11 @@ import { motion } from "framer-motion";
 
 const variants = {
   default: "bg-gray-900 text-white dark:bg-white dark:text-gray-900",
-  bestseller: "bg-gradient-to-r from-amber-500 to-orange-500 text-white",
-  new: "bg-gradient-to-r from-emerald-500 to-teal-500 text-white",
-  limited: "bg-gradient-to-r from-purple-600 to-pink-500 text-white",
-  sale: "bg-gradient-to-r from-red-500 to-rose-500 text-white",
-  exclusive: "bg-gradient-to-r from-indigo-600 to-violet-500 text-white",
+  bestseller: "bg-luxury-charcoal text-accent border border-accent/20",
+  new: "bg-luxury-charcoal text-emerald-400 border border-emerald-400/20",
+  limited: "bg-luxury-charcoal text-accent-light border border-accent/20",
+  sale: "bg-red-600 text-white",
+  exclusive: "bg-luxury-charcoal text-accent border border-accent/30",
 };
 
 const sizes = {

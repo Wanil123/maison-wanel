@@ -59,7 +59,7 @@ const Input = forwardRef(
               placeholder-gray-400 dark:placeholder-gray-500
               transition-all duration-200
               focus:outline-none focus:ring-0
-              focus:border-violet-500 focus:shadow-lg focus:shadow-violet-500/10
+              focus:border-accent focus:shadow-lg focus:shadow-accent/10
               disabled:opacity-50 disabled:cursor-not-allowed
               ${Icon ? "pl-11" : ""}
               ${isPassword || error || success ? "pr-11" : ""}

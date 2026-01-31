@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
 import { STR } from "../data/translations";
 
 // LocalStorage helpers
@@ -50,13 +50,17 @@ export function AppProvider({ children }) {
     document.documentElement.classList.toggle("dark", dark);
   }, [dark]);
 
-  // Preconnect to image CDN
+  // Preconnect to image CDNs
   useEffect(() => {
-    const link = document.createElement("link");
-    link.rel = "preconnect";
-    link.href = "https://images.unsplash.com";
-    document.head.appendChild(link);
-    return () => document.head.removeChild(link);
+    const cdns = ["https://images.unsplash.com", "https://images.pexels.com"];
+    const links = cdns.map((href) => {
+      const link = document.createElement("link");
+      link.rel = "preconnect";
+      link.href = href;
+      document.head.appendChild(link);
+      return link;
+    });
+    return () => links.forEach((l) => document.head.removeChild(l));
   }, []);
 
   // Toast functions
@@ -129,8 +133,8 @@ export function AppProvider({ children }) {
     setCart([]);
   }, []);
 
-  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-  const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
+  const cartTotal = useMemo(() => cart.reduce((sum, item) => sum + item.price * item.qty, 0), [cart]);
+  const cartCount = useMemo(() => cart.reduce((sum, item) => sum + item.qty, 0), [cart]);
 
   // Wishlist functions
   const toggleWishlist = useCallback((product) => {
@@ -159,7 +163,7 @@ export function AppProvider({ children }) {
     return STR[lang][key] || key;
   }, [lang]);
 
-  const value = {
+  const value = useMemo(() => ({
     // Language
     lang,
     setLang,
@@ -187,7 +191,7 @@ export function AppProvider({ children }) {
     toasts,
     addToast,
     removeToast,
-  };
+  }), [lang, setLang, t, dark, toggleDark, cart, addToCart, updateCartQty, removeFromCart, clearCart, cartTotal, cartCount, wishlist, toggleWishlist, isWishlisted, toasts, addToast, removeToast]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

@@ -192,7 +192,7 @@ export default function Checkout() {
                   exit={{ opacity: 0, x: -20 }}
                   className="bg-white dark:bg-gray-800 rounded-2xl p-6 md:p-8 border border-gray-100 dark:border-gray-700"
                 >
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                  <h2 className="text-2xl font-serif font-bold text-gray-900 dark:text-white mb-6">
                     {T.shipping_address}
                   </h2>
 
@@ -284,7 +284,7 @@ export default function Checkout() {
                   exit={{ opacity: 0, x: -20 }}
                   className="bg-white dark:bg-gray-800 rounded-2xl p-6 md:p-8 border border-gray-100 dark:border-gray-700"
                 >
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                  <h2 className="text-2xl font-serif font-bold text-gray-900 dark:text-white mb-6">
                     {T.payment}
                   </h2>
 
@@ -372,7 +372,7 @@ export default function Checkout() {
                       </h3>
                       <button
                         onClick={() => setStep(1)}
-                        className="text-sm text-violet-600 dark:text-violet-400 hover:underline"
+                        className="text-sm text-accent dark:text-accent hover:underline"
                       >
                         {lang === "fr" ? "Modifier" : "Edit"}
                       </button>
@@ -393,7 +393,7 @@ export default function Checkout() {
                       </h3>
                       <button
                         onClick={() => setStep(2)}
-                        className="text-sm text-violet-600 dark:text-violet-400 hover:underline"
+                        className="text-sm text-accent dark:text-accent hover:underline"
                       >
                         {lang === "fr" ? "Modifier" : "Edit"}
                       </button>

@@ -1,119 +1,115 @@
-import { useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Truck, Shield, RotateCcw, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowRight, Truck, Shield, RotateCcw, Diamond } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { STR } from "../data/translations";
 import Button from "./ui/Button";
 
+const MARQUEE_ITEMS = [
+  "EXCLUSIVE COLLECTIONS",
+  "FREE SHIPPING",
+  "PREMIUM QUALITY",
+  "HANDCRAFTED LUXURY",
+  "TIMELESS DESIGN",
+  "SUSTAINABLE FASHION",
+];
+
+const CATEGORY_SHOWCASE = [
+  {
+    image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=600&q=75",
+    label: { fr: "Femme", en: "Women" },
+    gender: "femme",
+  },
+  {
+    image: "https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&w=600&q=75",
+    label: { fr: "Homme", en: "Men" },
+    gender: "homme",
+  },
+  {
+    image: "https://images.unsplash.com/photo-1503944583220-79d8926ad5e2?auto=format&fit=crop&w=600&q=75",
+    label: { fr: "Enfant", en: "Children" },
+    gender: "enfant",
+  },
+];
+
 export default function Hero() {
   const { lang } = useApp();
   const T = STR[lang];
-  const containerRef = useRef(null);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.9]);
 
   const features = [
-    {
-      icon: Truck,
-      title: T.free_shipping,
-      desc: T.orders_over,
-    },
-    {
-      icon: Shield,
-      title: T.secure_pay,
-      desc: T.fully_encrypted,
-    },
-    {
-      icon: RotateCcw,
-      title: T.free_returns,
-      desc: T.returns_details,
-    },
+    { icon: Truck, title: T.free_shipping, desc: T.orders_over },
+    { icon: Shield, title: T.secure_pay, desc: T.fully_encrypted },
+    { icon: RotateCcw, title: T.free_returns, desc: T.returns_details },
   ];
 
-  return (
-    <section ref={containerRef} className="relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-        {/* Animated gradient orbs */}
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-0 left-0 w-[800px] h-[800px] rounded-full bg-gradient-to-r from-violet-600/30 to-purple-600/30 blur-3xl -translate-x-1/2 -translate-y-1/2"
-        />
-        <motion.div
-          animate={{
-            scale: [1.2, 1, 1.2],
-            opacity: [0.2, 0.4, 0.2],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-0 right-0 w-[600px] h-[600px] rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 blur-3xl translate-x-1/2 translate-y-1/2"
-        />
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15, delayChildren: 0.3 },
+    },
+  };
 
-        {/* Grid pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.02]"
-          style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px),
-                             linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)`,
-            backgroundSize: "50px 50px",
-          }}
-        />
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: [0.23, 1, 0.32, 1] },
+    },
+  };
+
+  return (
+    <section className="relative overflow-hidden">
+      {/* Background — warm wine/burgundy gradient (static orbs for perf) */}
+      <div className="absolute inset-0 bg-wine-hero">
+        <div className="absolute -top-40 -left-40 w-[700px] h-[700px] rounded-full bg-gradient-to-r from-luxury-wine/30 to-accent/15 blur-2xl opacity-25" />
+        <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] rounded-full bg-gradient-to-r from-accent/10 to-luxury-rose/15 blur-2xl opacity-20" />
       </div>
 
-      {/* Content */}
-      <motion.div style={{ y, opacity, scale }} className="relative">
-        <div className="container-luxe py-20 md:py-32 lg:py-40">
-          <div className="max-w-4xl mx-auto text-center">
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white/90 text-sm font-medium mb-6"
-            >
-              <Sparkles className="w-4 h-4 text-amber-400" />
-              {T.new_arrivals} 2025
+      {/* Content — NO scroll fade */}
+      <div className="relative z-10">
+        <div className="container-luxe py-24 md:py-36 lg:py-44">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="max-w-4xl mx-auto text-center"
+          >
+            {/* Luxury badge */}
+            <motion.div variants={itemVariants} className="mb-8">
+              <span className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full glass-luxury text-accent text-sm font-medium tracking-wider uppercase">
+                <Diamond className="w-4 h-4" />
+                {T.new_arrivals} 2026
+              </span>
             </motion.div>
 
             {/* Title */}
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-              className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 leading-tight"
-            >
-              <span className="block">{T.hero_title}</span>
-              <span className="block mt-2 bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                {T.hero_subtitle}
+            <motion.h1 variants={itemVariants} className="mb-8">
+              <span className="block font-serif text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-[0.95] tracking-tight">
+                {T.hero_title}
+              </span>
+              <span className="block font-serif text-5xl md:text-7xl lg:text-8xl font-bold mt-3 leading-[0.95] tracking-tight">
+                <span className="text-gold-gradient">{T.hero_subtitle}</span>
               </span>
             </motion.h1>
 
+            {/* Gold divider */}
+            <motion.div variants={itemVariants} className="mx-auto mb-8">
+              <div className="luxury-divider w-24 mx-auto" />
+            </motion.div>
+
             {/* Description */}
             <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed"
+              variants={itemVariants}
+              className="text-lg md:text-xl text-luxury-rose mb-12 max-w-2xl mx-auto leading-relaxed font-light"
             >
               {T.hero_desc}
             </motion.p>
 
             {/* CTA Buttons */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
+              variants={itemVariants}
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
               <Link to="/">
@@ -121,7 +117,7 @@ export default function Hero() {
                   size="lg"
                   icon={ArrowRight}
                   iconPosition="right"
-                  className="min-w-[200px] bg-white text-gray-900 hover:bg-gray-100"
+                  className="min-w-[220px] bg-accent hover:bg-accent-dark text-luxury-noir border-0"
                 >
                   {T.shop_now}
                 </Button>
@@ -130,78 +126,134 @@ export default function Hero() {
                 <Button
                   variant="ghost"
                   size="lg"
-                  className="min-w-[200px] text-white border-2 border-white/30 hover:bg-white/10"
+                  className="min-w-[220px] text-white border-2 border-accent/30 hover:bg-accent/10 hover:border-accent/50"
                 >
                   {T.learn_more}
                 </Button>
               </Link>
             </motion.div>
+          </motion.div>
 
-            {/* Stats */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-              className="flex items-center justify-center gap-8 md:gap-16 mt-16"
-            >
-              {[
-                { value: "10K+", label: lang === "fr" ? "Clients satisfaits" : "Happy customers" },
-                { value: "500+", label: lang === "fr" ? "Produits" : "Products" },
-                { value: "4.9", label: lang === "fr" ? "Note moyenne" : "Average rating" },
-              ].map((stat, i) => (
-                <div key={i} className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold text-white mb-1">
-                    {stat.value}
+          {/* Category Showcase Cards */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-24 max-w-5xl mx-auto"
+          >
+            {CATEGORY_SHOWCASE.map((cat, i) => (
+              <motion.div
+                key={i}
+                variants={itemVariants}
+                whileHover={{ y: -8, scale: 1.02 }}
+                transition={{ duration: 0.4 }}
+              >
+                <Link
+                  to={`/?g=${cat.gender}`}
+                  className="block relative group rounded-2xl overflow-hidden aspect-[3/4]"
+                >
+                  <img
+                    src={cat.image}
+                    alt={cat.label[lang]}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-luxury-noir/80 via-luxury-plum/30 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <h3 className="font-serif text-2xl md:text-3xl font-bold text-white mb-2">
+                      {cat.label[lang]}
+                    </h3>
+                    <span className="inline-flex items-center gap-2 text-accent text-sm font-medium uppercase tracking-wider group-hover:gap-3 transition-all">
+                      {T.discover} <ArrowRight className="w-4 h-4" />
+                    </span>
                   </div>
-                  <div className="text-sm text-gray-400">{stat.label}</div>
+                  <div className="absolute inset-0 border-2 border-transparent group-hover:border-accent/30 rounded-2xl transition-colors duration-300" />
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Stats */}
+          <motion.div
+            variants={itemVariants}
+            initial="hidden"
+            animate="visible"
+            className="flex items-center justify-center gap-12 md:gap-20 mt-20"
+          >
+            {[
+              { value: "10K+", label: lang === "fr" ? "Clients" : "Clients" },
+              { value: "500+", label: lang === "fr" ? "Pièces" : "Pieces" },
+              { value: "4.9", label: lang === "fr" ? "Note" : "Rating" },
+            ].map((stat, i) => (
+              <div key={i} className="text-center">
+                <div className="text-3xl md:text-4xl font-serif font-bold text-white mb-1">
+                  {stat.value}
                 </div>
-              ))}
-            </motion.div>
+                <div className="text-xs uppercase tracking-[0.2em] text-accent font-medium">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Marquee Banner */}
+        <div className="border-t border-b border-accent/10 py-4 overflow-hidden bg-luxury-noir/30">
+          <div className="marquee-track">
+            {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
+              <span
+                key={i}
+                className="flex items-center gap-6 mx-8 text-sm font-medium tracking-[0.25em] text-luxury-rose/60 uppercase whitespace-nowrap"
+              >
+                <Diamond className="w-3 h-3 text-accent/40" />
+                {item}
+              </span>
+            ))}
           </div>
         </div>
 
         {/* Features Bar */}
-        <div className="border-t border-white/10">
-          <div className="container-luxe py-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        <div className="border-b border-white/5 bg-luxury-noir/20">
+          <div className="container-luxe py-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {features.map((feature, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.7 + index * 0.1 }}
-                  className="flex items-center gap-4 text-white"
+                  transition={{ delay: 1.2 + index * 0.15 }}
+                  className="flex items-center gap-4 text-white group"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
-                    <feature.icon className="w-6 h-6" />
+                  <div className="w-12 h-12 rounded-xl glass-luxury flex items-center justify-center flex-shrink-0 group-hover:border-accent/30 transition-colors">
+                    <feature.icon className="w-5 h-5 text-accent" />
                   </div>
                   <div>
-                    <div className="font-semibold">{feature.title}</div>
-                    <div className="text-sm text-gray-400">{feature.desc}</div>
+                    <div className="font-medium text-sm">{feature.title}</div>
+                    <div className="text-xs text-luxury-rose/50">{feature.desc}</div>
                   </div>
                 </motion.div>
               ))}
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        transition={{ delay: 1.5 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
       >
         <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="w-6 h-10 rounded-full border-2 border-white/30 flex items-start justify-center p-2"
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+          className="w-5 h-9 rounded-full border border-accent/30 flex items-start justify-center p-1.5"
         >
           <motion.div
-            animate={{ height: ["20%", "60%", "20%"] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="w-1 bg-white/50 rounded-full"
+            animate={{ height: ["20%", "50%", "20%"] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            className="w-0.5 bg-accent/50 rounded-full"
           />
         </motion.div>
       </motion.div>

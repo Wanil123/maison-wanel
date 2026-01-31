@@ -40,3 +40,7 @@ coverage
 .cache
 .parcel-cache
 .eslintcache
+
+# Claude
+.claude/
+nul

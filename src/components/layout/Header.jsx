@@ -9,7 +9,6 @@ import {
   Sun,
   Moon,
   Search,
-  User,
   ChevronDown,
 } from "lucide-react";
 import { useApp } from "../../context/AppContext";
@@ -23,6 +22,14 @@ export default function Header() {
   const location = useLocation();
   const T = STR[lang];
 
+  const isActiveLink = (linkTo) => {
+    const [linkPath, linkQuery] = linkTo.split("?");
+    if (linkQuery) {
+      return location.pathname === linkPath && location.search === `?${linkQuery}`;
+    }
+    return location.pathname === linkPath && !location.search;
+  };
+
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
@@ -35,6 +42,9 @@ export default function Header() {
 
   const navLinks = [
     { to: "/", label: T.nav_shop },
+    { to: "/?g=femme", label: lang === "fr" ? "Femme" : "Women" },
+    { to: "/?g=homme", label: lang === "fr" ? "Homme" : "Men" },
+    { to: "/?g=enfant", label: lang === "fr" ? "Enfant" : "Children" },
     { to: "/wishlist", label: T.nav_wishlist },
     { to: "/about", label: T.nav_about },
   ];
@@ -60,15 +70,15 @@ export default function Header() {
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 group">
               <motion.div
-                whileHover={{ rotate: [0, -10, 10, 0] }}
-                transition={{ duration: 0.5 }}
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
                 className={`
                   w-11 h-11 rounded-xl flex items-center justify-center
-                  font-bold text-lg shadow-lg
+                  font-serif font-bold text-lg shadow-lg border
                   ${
                     isScrolled || dark
-                      ? "bg-gradient-to-br from-gray-900 to-gray-700 text-white dark:from-white dark:to-gray-200 dark:text-gray-900"
-                      : "bg-white/90 text-gray-900"
+                      ? "bg-luxury-charcoal text-accent border-accent/20 dark:bg-accent dark:text-luxury-noir dark:border-accent"
+                      : "bg-luxury-charcoal/90 text-accent border-accent/20"
                   }
                 `}
               >
@@ -77,16 +87,16 @@ export default function Header() {
               <div className="hidden sm:block">
                 <div
                   className={`
-                    text-xl font-bold tracking-tight
-                    ${isScrolled ? "text-gray-900 dark:text-white" : dark ? "text-white" : "text-gray-900"}
+                    text-xl font-serif font-bold tracking-tight
+                    ${isScrolled ? "text-gray-900 dark:text-white" : dark ? "text-white" : "text-white"}
                   `}
                 >
                   {T.brand}
                 </div>
                 <div
                   className={`
-                    text-[10px] uppercase tracking-[0.2em] -mt-0.5
-                    ${isScrolled ? "text-gray-500 dark:text-gray-400" : dark ? "text-gray-300" : "text-gray-500"}
+                    text-[10px] uppercase tracking-[0.25em] -mt-0.5
+                    ${isScrolled ? "text-accent dark:text-accent" : "text-accent/80"}
                   `}
                 >
                   {T.tagline}
@@ -117,10 +127,10 @@ export default function Header() {
                       {wishlist.length}
                     </span>
                   )}
-                  {location.pathname === link.to && (
+                  {isActiveLink(link.to) && (
                     <motion.div
                       layoutId="nav-underline"
-                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-violet-500 to-purple-500 rounded-full"
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-accent to-accent-light rounded-full"
                     />
                   )}
                 </Link>
@@ -157,7 +167,7 @@ export default function Header() {
                   className={`
                     appearance-none cursor-pointer
                     px-3 py-2 pr-8 rounded-xl font-medium text-sm
-                    transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500/50
+                    transition-colors focus:outline-none focus:ring-2 focus:ring-accent/50
                     ${
                       isScrolled
                         ? "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
@@ -204,7 +214,7 @@ export default function Header() {
               </motion.button>
 
               {/* Cart Button */}
-              <Link to="/cart">
+              <Link to="/cart" aria-label={`${T.cart} (${cartCount})`}>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -224,7 +234,7 @@ export default function Header() {
                     <motion.span
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-r from-violet-500 to-purple-500 text-white text-xs font-bold flex items-center justify-center"
+                      className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-accent text-luxury-noir text-xs font-bold flex items-center justify-center"
                     >
                       {cartCount}
                     </motion.span>
@@ -305,8 +315,8 @@ export default function Header() {
                             flex items-center justify-between px-4 py-3 rounded-xl
                             font-medium transition-colors
                             ${
-                              location.pathname === link.to
-                                ? "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300"
+                              isActiveLink(link.to)
+                                ? "bg-accent/10 dark:bg-accent/20 text-accent-dark dark:text-accent"
                                 : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                             }
                           `}
@@ -341,7 +351,7 @@ export default function Header() {
                         onClick={toggleDark}
                         className={`
                           w-14 h-8 rounded-full transition-colors relative
-                          ${dark ? "bg-violet-500" : "bg-gray-300"}
+                          ${dark ? "bg-accent" : "bg-gray-300"}
                         `}
                       >
                         <motion.div
@@ -349,7 +359,7 @@ export default function Header() {
                           className="absolute top-1 w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center"
                         >
                           {dark ? (
-                            <Moon className="w-3.5 h-3.5 text-violet-500" />
+                            <Moon className="w-3.5 h-3.5 text-accent" />
                           ) : (
                             <Sun className="w-3.5 h-3.5 text-amber-500" />
                           )}
@@ -363,7 +373,7 @@ export default function Header() {
                   <Link
                     to="/cart"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-xl bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-100 text-white dark:text-gray-900 font-semibold"
+                    className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-xl bg-gradient-to-r from-luxury-charcoal to-luxury-wine dark:from-accent dark:to-accent-light text-white dark:text-luxury-noir font-semibold"
                   >
                     <ShoppingBag className="w-5 h-5" />
                     {T.cart} ({cartCount})

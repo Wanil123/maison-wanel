@@ -81,7 +81,7 @@ export default function Cart() {
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-3xl font-bold text-gray-900 dark:text-white mb-8"
+          className="text-3xl font-serif font-bold text-gray-900 dark:text-white mb-8"
         >
           {T.cart_title(cart.length)}
         </motion.h1>
@@ -118,7 +118,7 @@ export default function Cart() {
                   <div className="flex-1 flex flex-col">
                     <div className="flex-1">
                       <Link to={`/product/${item.id}`}>
-                        <h3 className="font-semibold text-gray-900 dark:text-white hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+                        <h3 className="font-semibold text-gray-900 dark:text-white hover:text-accent dark:hover:text-accent transition-colors">
                           {item.name[lang]}
                         </h3>
                       </Link>
@@ -180,7 +180,7 @@ export default function Cart() {
             </AnimatePresence>
 
             {/* Continue Shopping */}
-            <Link to="/" className="inline-flex items-center gap-2 text-violet-600 dark:text-violet-400 hover:underline mt-4">
+            <Link to="/" className="inline-flex items-center gap-2 text-accent dark:text-accent hover:underline mt-4">
               <ArrowRight className="w-4 h-4 rotate-180" />
               {T.continue_shopping}
             </Link>
@@ -205,7 +205,7 @@ export default function Cart() {
                   <input
                     type="text"
                     placeholder={T.promo_code}
-                    className="w-full pl-10 pr-4 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-violet-500"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-accent"
                   />
                 </div>
                 <Button variant="secondary" className="px-4">

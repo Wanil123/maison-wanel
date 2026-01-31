@@ -180,12 +180,12 @@ export default function Product() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             {/* Category */}
-            <span className="text-sm font-medium uppercase tracking-wider text-violet-600 dark:text-violet-400">
+            <span className="text-sm font-medium uppercase tracking-wider text-accent dark:text-accent">
               {product.category[lang]}
             </span>
 
             {/* Name */}
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mt-2 mb-4">
+            <h1 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-white mt-2 mb-4">
               {product.name[lang]}
             </h1>
 
@@ -246,7 +246,7 @@ export default function Product() {
                   <span className="font-semibold text-gray-900 dark:text-white">
                     {T.size}
                   </span>
-                  <button className="text-sm text-violet-600 dark:text-violet-400 hover:underline">
+                  <button className="text-sm text-accent dark:text-accent hover:underline">
                     {T.size_guide}
                   </button>
                 </div>
@@ -358,8 +358,8 @@ export default function Product() {
                 { icon: RotateCcw, title: T.free_returns, desc: T.returns_details },
               ].map((feature, i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center flex-shrink-0">
-                    <feature.icon className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+                  <div className="w-10 h-10 rounded-xl bg-accent/10 dark:bg-accent/20 flex items-center justify-center flex-shrink-0">
+                    <feature.icon className="w-5 h-5 text-accent dark:text-accent" />
                   </div>
                   <div>
                     <div className="font-medium text-gray-900 dark:text-white text-sm">
@@ -378,7 +378,7 @@ export default function Product() {
         {/* Related Products */}
         {relatedProducts.length > 0 && (
           <section className="mt-20">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">
+            <h2 className="text-2xl font-serif font-bold text-gray-900 dark:text-white mb-8">
               {lang === "fr" ? "Vous aimerez aussi" : "You might also like"}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

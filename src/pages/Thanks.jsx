@@ -64,7 +64,7 @@ export default function Thanks() {
             transition={{ delay: 0.5 }}
             className="inline-flex items-center gap-3 px-6 py-4 bg-gray-100 dark:bg-gray-800 rounded-2xl mb-8"
           >
-            <Package className="w-6 h-6 text-violet-600 dark:text-violet-400" />
+            <Package className="w-6 h-6 text-accent dark:text-accent" />
             <div className="text-left">
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 {T.order_number}

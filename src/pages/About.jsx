@@ -32,19 +32,19 @@ export default function About() {
       icon: Award,
       title: T.about_val1,
       desc: T.about_val1_desc,
-      color: "from-amber-500 to-orange-500",
+      color: "from-accent to-accent-light",
     },
     {
       icon: Sparkles,
       title: T.about_val2,
       desc: T.about_val2_desc,
-      color: "from-violet-500 to-purple-500",
+      color: "from-accent-dark to-accent",
     },
     {
       icon: Heart,
       title: T.about_val3,
       desc: T.about_val3_desc,
-      color: "from-pink-500 to-rose-500",
+      color: "from-accent to-accent-light",
     },
   ];
 
@@ -58,16 +58,16 @@ export default function About() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+      <section className="relative overflow-hidden bg-wine-hero text-white grain-overlay">
         {/* Background Effects */}
         <div className="absolute inset-0">
           <motion.div
             animate={{
               scale: [1, 1.2, 1],
-              rotate: [0, 180, 360],
+              opacity: [0.15, 0.25, 0.15],
             }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-gradient-to-r from-violet-600/20 to-purple-600/20 blur-3xl"
+            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-gradient-to-r from-accent/15 to-accent-light/10 blur-3xl"
           />
         </div>
 
@@ -85,7 +85,7 @@ export default function About() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-sm font-medium mb-6"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-luxury text-accent text-sm font-medium mb-6"
             >
               <Globe className="w-4 h-4" />
               Montreal, Canada
@@ -95,7 +95,7 @@ export default function About() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-4xl md:text-6xl font-extrabold mb-6"
+              className="text-4xl md:text-6xl font-serif font-bold mb-6"
             >
               {T.about_title}
             </motion.h1>
@@ -160,10 +160,10 @@ export default function About() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <span className="text-sm font-semibold uppercase tracking-wider text-violet-600 dark:text-violet-400">
+              <span className="text-sm font-semibold uppercase tracking-wider text-accent dark:text-accent">
                 {T.our_story}
               </span>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mt-2 mb-6">
+              <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-white mt-2 mb-6">
                 {lang === "fr"
                   ? "Une passion pour l'excellence"
                   : "A passion for excellence"}
@@ -204,10 +204,10 @@ export default function About() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <span className="text-sm font-semibold uppercase tracking-wider text-violet-600 dark:text-violet-400">
+            <span className="text-sm font-semibold uppercase tracking-wider text-accent dark:text-accent">
               {T.our_mission}
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mt-2">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-white mt-2">
               {T.about_values}
             </h2>
           </motion.div>
@@ -289,14 +289,14 @@ export default function About() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gray-900 dark:bg-black text-white">
-        <div className="container-luxe text-center">
+      <section className="py-20 bg-wine-hero text-white grain-overlay relative">
+        <div className="container-luxe text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+            <h2 className="text-3xl md:text-5xl font-serif font-bold mb-4">
               {lang === "fr"
                 ? "Prêt à découvrir notre collection ?"
                 : "Ready to explore our collection?"}

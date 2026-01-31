@@ -16,7 +16,7 @@ export const STR = {
     close: "Fermer",
 
     // Hero
-    hero_title: "Collection Automne 2025",
+    hero_title: "Collection Printemps 2026",
     hero_subtitle: "L'élégance intemporelle",
     hero_desc: "Découvrez notre nouvelle collection de vêtements et accessoires premium. Livraison gratuite dès 100$, retours sous 30 jours.",
     discover: "Découvrir",
@@ -217,7 +217,7 @@ export const STR = {
     close: "Close",
 
     // Hero
-    hero_title: "Autumn 2025 Collection",
+    hero_title: "Spring 2026 Collection",
     hero_subtitle: "Timeless Elegance",
     hero_desc: "Discover our new collection of premium clothing & accessories. Free shipping over $100, 30-day returns.",
     discover: "Discover",
