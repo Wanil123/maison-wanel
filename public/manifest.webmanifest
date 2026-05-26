@@ -1,0 +1,20 @@
+{
+  "name": "LuxeMode — Mode Premium",
+  "short_name": "LuxeMode",
+  "description": "Boutique de mode et accessoires de luxe.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FAF4EB",
+  "theme_color": "#1E0F21",
+  "lang": "fr-CA",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

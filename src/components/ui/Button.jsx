@@ -3,27 +3,34 @@ import { motion } from "framer-motion";
 
 const variants = {
   primary: `
-    bg-gradient-to-r from-gray-900 to-gray-700 text-white
-    dark:from-white dark:to-gray-100 dark:text-gray-900
-    hover:shadow-xl hover:shadow-gray-900/20 dark:hover:shadow-white/20
+    bg-gradient-to-r from-luxury-charcoal to-luxury-wine text-accent
+    border border-accent/20
+    hover:from-luxury-wine hover:to-luxury-plum hover:shadow-xl hover:shadow-luxury-wine/30
+    dark:from-accent dark:to-accent-light dark:text-luxury-noir dark:border-accent/40
+    dark:hover:from-accent-light dark:hover:to-accent
   `,
   secondary: `
-    bg-transparent border-2 border-gray-900 text-gray-900
-    dark:border-white dark:text-white
-    hover:bg-gray-900 hover:text-white
-    dark:hover:bg-white dark:hover:text-gray-900
+    bg-transparent border-2 border-luxury-charcoal text-luxury-charcoal
+    dark:border-accent dark:text-accent
+    hover:bg-luxury-charcoal hover:text-accent
+    dark:hover:bg-accent dark:hover:text-luxury-noir
+  `,
+  gold: `
+    bg-gradient-to-r from-accent to-accent-light text-luxury-noir
+    border border-accent
+    hover:from-accent-light hover:to-accent hover:shadow-xl hover:shadow-accent/30
   `,
   ghost: `
     bg-transparent text-gray-700 dark:text-gray-300
-    hover:bg-gray-100 dark:hover:bg-gray-800
+    hover:bg-gray-100 dark:hover:bg-white/5
   `,
   danger: `
-    bg-gradient-to-r from-red-600 to-red-500 text-white
-    hover:shadow-xl hover:shadow-red-500/20
+    bg-gradient-to-r from-red-700 to-red-600 text-white
+    hover:shadow-xl hover:shadow-red-500/30
   `,
   success: `
     bg-gradient-to-r from-emerald-600 to-emerald-500 text-white
-    hover:shadow-xl hover:shadow-emerald-500/20
+    hover:shadow-xl hover:shadow-emerald-500/30
   `,
 };
 
@@ -41,6 +48,7 @@ const Button = forwardRef(
       variant = "primary",
       size = "md",
       className = "",
+      type,
       disabled = false,
       loading = false,
       icon: Icon,
@@ -51,34 +59,36 @@ const Button = forwardRef(
     },
     ref
   ) => {
-    const Component = as === "button" ? motion.button : motion.a;
+    const isButton = as === "button";
+    const Component = isButton ? motion.button : motion.a;
+    const isDisabled = disabled || loading;
+
+    const a11yProps = isButton
+      ? { type: type || "button", disabled: isDisabled, "aria-busy": loading || undefined }
+      : { "aria-disabled": isDisabled || undefined };
 
     return (
       <Component
         ref={ref}
-        whileHover={{ scale: disabled ? 1 : 1.02, y: disabled ? 0 : -2 }}
-        whileTap={{ scale: disabled ? 1 : 0.98 }}
+        whileHover={isDisabled ? undefined : { scale: 1.02, y: -2 }}
+        whileTap={isDisabled ? undefined : { scale: 0.98 }}
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
-        disabled={disabled || loading}
+        {...a11yProps}
         className={`
           relative inline-flex items-center justify-center gap-2
           font-semibold rounded-xl
-          transition-all duration-300 ease-out
+          transition-shadow duration-300 ease-out
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2
           disabled:opacity-50 disabled:cursor-not-allowed
+          ${isDisabled && !isButton ? "pointer-events-none opacity-50" : ""}
           overflow-hidden
-          ${variants[variant]}
-          ${sizes[size]}
+          ${variants[variant] || variants.primary}
+          ${sizes[size] || sizes.md}
           ${fullWidth ? "w-full" : ""}
           ${className}
         `}
         {...props}
       >
-        {/* Shine effect */}
-        <span className="absolute inset-0 overflow-hidden rounded-xl">
-          <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-shine" />
-        </span>
-
-        {/* Content */}
         <span className="relative flex items-center gap-2">
           {loading ? (
             <svg
@@ -86,15 +96,9 @@ const Button = forwardRef(
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path
                 className="opacity-75"
                 fill="currentColor"
@@ -103,9 +107,9 @@ const Button = forwardRef(
             </svg>
           ) : (
             <>
-              {Icon && iconPosition === "left" && <Icon className="w-5 h-5" />}
+              {Icon && iconPosition === "left" && <Icon className="w-5 h-5" aria-hidden="true" />}
               {children}
-              {Icon && iconPosition === "right" && <Icon className="w-5 h-5" />}
+              {Icon && iconPosition === "right" && <Icon className="w-5 h-5" aria-hidden="true" />}
             </>
           )}
         </span>

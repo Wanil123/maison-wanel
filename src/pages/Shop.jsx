@@ -8,27 +8,37 @@ import { PRODUCTS, CATEGORIES, GENDERS } from "../data/products";
 import Hero from "../components/Hero";
 import ProductCard from "../components/ProductCard";
 import Button from "../components/ui/Button";
+import usePageMeta from "../hooks/usePageMeta";
 
 export default function Shop() {
   const { lang } = useApp();
   const T = STR[lang];
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [filters, setFilters] = useState({
     gender: "all",
     category: "all",
     sort: "featured",
-    query: "",
+    query: searchParams.get("q") || "",
   });
 
-  // Sync gender from URL query param
+  usePageMeta({
+    title: lang === "fr" ? "Boutique — Collection Printemps 2026" : "Shop — Spring 2026 Collection",
+    description:
+      lang === "fr"
+        ? "Découvrez la collection LuxeMode : mode et accessoires premium pour femme, homme et enfant. Livraison gratuite dès 100 $, retours 30 jours."
+        : "Explore the LuxeMode collection: premium fashion and accessories for women, men, and children. Free shipping over $100, 30-day returns.",
+  });
+
+  // Sync gender from URL query param without clobbering category if URL didn't request it.
   useEffect(() => {
     const g = searchParams.get("g");
-    if (g && ["femme", "homme", "enfant"].includes(g)) {
-      setFilters((f) => ({ ...f, gender: g, category: "all" }));
-    } else {
-      setFilters((f) => ({ ...f, gender: "all" }));
-    }
+    const q = searchParams.get("q") || "";
+    setFilters((f) => ({
+      ...f,
+      gender: g && ["femme", "homme", "enfant"].includes(g) ? g : "all",
+      query: q,
+    }));
   }, [searchParams]);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [gridCols, setGridCols] = useState(4);
@@ -91,6 +101,7 @@ export default function Shop() {
 
   const clearFilters = () => {
     setFilters({ gender: "all", category: "all", sort: "featured", query: "" });
+    setSearchParams({}, { replace: true });
   };
 
   return (
@@ -99,7 +110,7 @@ export default function Shop() {
       {filters.gender === "all" && <Hero />}
 
       {/* Shop Section */}
-      <section className="py-12 md:py-16 scroll-mt-20">
+      <section id="products" className="py-12 md:py-16 scroll-mt-24" aria-labelledby="shop-heading">
         <div className="container-luxe">
           {/* Section Header — full version on home, compact when gender active */}
           {filters.gender === "all" ? (
@@ -114,7 +125,7 @@ export default function Shop() {
                 {lang === "fr" ? "Collection exclusive" : "Exclusive collection"}
                 <Diamond className="w-3.5 h-3.5" />
               </span>
-              <h2 className="text-4xl md:text-6xl font-serif font-bold text-gray-900 dark:text-white mb-5">
+              <h2 id="shop-heading" className="text-4xl md:text-6xl font-serif font-bold text-gray-900 dark:text-white mb-5">
                 {lang === "fr" ? "Notre Collection" : "Our Collection"}
               </h2>
               <div className="luxury-divider w-24 mx-auto mb-5" />
@@ -130,7 +141,7 @@ export default function Shop() {
               animate={{ opacity: 1, y: 0 }}
               className="mb-8"
             >
-              <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-white">
+              <h2 id="shop-heading" className="text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-white">
                 {GENDERS.find((g) => g.value === filters.gender)?.[lang]}
               </h2>
               <div className="luxury-divider w-16 mt-3" />
@@ -141,20 +152,26 @@ export default function Shop() {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-6">
             {/* Search */}
             <div className="relative flex-1 sm:max-w-xs">
+              <label htmlFor="shop-search" className="sr-only">
+                {T.search_placeholder}
+              </label>
               <input
-                type="text"
+                id="shop-search"
+                type="search"
                 placeholder={T.search_placeholder}
                 value={filters.query}
                 onChange={(e) => setFilters((f) => ({ ...f, query: e.target.value }))}
-                className="w-full px-4 py-2.5 pl-10 rounded-xl bg-gray-100 dark:bg-gray-800 border-2 border-transparent focus:border-accent text-gray-900 dark:text-white placeholder-gray-400 transition-all outline-none text-sm"
+                className="w-full px-4 py-2.5 pl-10 rounded-xl bg-gray-100 dark:bg-luxury-charcoal/60 border-2 border-transparent focus:border-accent text-gray-900 dark:text-white placeholder-gray-400 transition-colors outline-none text-sm"
               />
-              <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" aria-hidden="true" />
               {filters.query && (
                 <button
+                  type="button"
                   onClick={() => setFilters((f) => ({ ...f, query: "" }))}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-luxury-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  aria-label={lang === "fr" ? "Effacer la recherche" : "Clear search"}
                 >
-                  <X className="w-3 h-3 text-gray-500" />
+                  <X className="w-3 h-3 text-gray-500" aria-hidden="true" />
                 </button>
               )}
             </div>
@@ -163,18 +180,25 @@ export default function Shop() {
             <div className="flex items-center gap-2 sm:ml-auto">
               {/* Mobile Filter Button */}
               <button
+                type="button"
                 onClick={() => setMobileFiltersOpen(true)}
-                className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                aria-haspopup="dialog"
+                aria-expanded={mobileFiltersOpen}
+                className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-luxury-charcoal/60 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-200 dark:hover:bg-luxury-charcoal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
-                <SlidersHorizontal className="w-4 h-4" />
+                <SlidersHorizontal className="w-4 h-4" aria-hidden="true" />
                 {T.filters}
               </button>
 
               {/* Sort */}
+              <label htmlFor="shop-sort" className="sr-only">
+                {lang === "fr" ? "Trier par" : "Sort by"}
+              </label>
               <select
+                id="shop-sort"
                 value={filters.sort}
                 onChange={(e) => setFilters((f) => ({ ...f, sort: e.target.value }))}
-                className="px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent/50 cursor-pointer"
+                className="px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-luxury-charcoal/60 text-gray-700 dark:text-gray-300 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent cursor-pointer"
               >
                 <option value="featured">{T.sort_featured}</option>
                 <option value="price-asc">{T.sort_price_asc}</option>

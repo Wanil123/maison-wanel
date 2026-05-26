@@ -14,11 +14,17 @@ import {
 import { useApp } from "../context/AppContext";
 import { STR } from "../data/translations";
 import Button from "../components/ui/Button";
+import usePageMeta from "../hooks/usePageMeta";
 
 export default function About() {
   const { lang } = useApp();
   const T = STR[lang];
   const containerRef = useRef(null);
+
+  usePageMeta({
+    title: T.about_title,
+    description: T.about_subtitle,
+  });
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -117,9 +123,9 @@ export default function About() {
               <Link to="/">
                 <Button
                   size="lg"
+                  variant="gold"
                   icon={ArrowRight}
                   iconPosition="right"
-                  className="bg-white text-gray-900 hover:bg-gray-100"
                 >
                   {T.about_cta}
                 </Button>
@@ -179,14 +185,22 @@ export default function About() {
               <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
                 <img
                   src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80"
-                  alt="LuxeMode Store"
+                  alt={lang === "fr" ? "Boutique LuxeMode — intérieur épuré et lumineux" : "LuxeMode boutique — clean, bright interior"}
+                  width={800}
+                  height={1000}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="absolute -bottom-6 -left-6 w-48 h-48 rounded-2xl overflow-hidden shadow-xl border-4 border-white dark:border-gray-900">
+              <div className="absolute -bottom-6 -left-6 w-48 h-48 rounded-2xl overflow-hidden shadow-xl border-4 border-white dark:border-luxury-noir">
                 <img
                   src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=400&q=80"
-                  alt="Fashion Detail"
+                  alt={lang === "fr" ? "Détail couture — finitions premium" : "Couture detail — premium finishes"}
+                  width={400}
+                  height={400}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -279,7 +293,11 @@ export default function About() {
               <div className="relative h-64 lg:h-auto">
                 <img
                   src="https://images.unsplash.com/photo-1532453288672-3a27e9be9efd?auto=format&fit=crop&w=800&q=80"
-                  alt="Sustainable Fashion"
+                  alt={lang === "fr" ? "Mode éco-responsable — matières naturelles" : "Sustainable fashion — natural materials"}
+                  width={800}
+                  height={600}
+                  loading="lazy"
+                  decoding="async"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
               </div>
@@ -309,9 +327,9 @@ export default function About() {
             <Link to="/">
               <Button
                 size="lg"
+                variant="gold"
                 icon={ArrowRight}
                 iconPosition="right"
-                className="bg-white text-gray-900 hover:bg-gray-100"
               >
                 {T.about_cta}
               </Button>

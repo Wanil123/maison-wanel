@@ -1,40 +1,109 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr-CA">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- Favicons & PWA -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#1E0F21" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#FAF4EB" media="(prefers-color-scheme: light)" />
+    <meta name="color-scheme" content="light dark" />
 
-    <!-- SEO Meta Tags -->
-    <title>LuxeMode - Haute Mode | Collection Printemps 2026</title>
-    <meta name="description" content="LuxeMode — vêtements de luxe et accessoires haut de gamme. Qualité exceptionnelle, design intemporel. Livraison gratuite dès 100$." />
-    <meta name="keywords" content="mode, fashion, vêtements, luxe, premium, accessoires, Montreal" />
-    <meta name="author" content="Wanil Parfait" />
+    <!-- SEO -->
+    <title>LuxeMode — Mode Premium · Collection Printemps 2026</title>
+    <meta name="description" content="LuxeMode — vêtements et accessoires de luxe pour Femme, Homme et Enfant. Qualité exceptionnelle, design intemporel. Livraison gratuite dès 100 $, retours sous 30 jours." />
+    <meta name="keywords" content="mode, fashion, vêtements, luxe, premium, accessoires, Montréal, Canada, femme, homme, enfant" />
+    <meta name="author" content="LuxeMode" />
+    <meta name="robots" content="index, follow" />
 
-    <!-- Open Graph / Social Media -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="LuxeMode - Mode Premium" />
-    <meta property="og:description" content="Collection Printemps 2026. Vêtements et accessoires premium." />
-    <meta property="og:image" content="/og-image.jpg" />
+    <meta property="og:site_name" content="LuxeMode" />
+    <meta property="og:locale" content="fr_CA" />
+    <meta property="og:locale:alternate" content="en_CA" />
+    <meta property="og:title" content="LuxeMode — Mode Premium" />
+    <meta property="og:description" content="Collection Printemps 2026. Vêtements et accessoires premium pour Femme, Homme et Enfant." />
+    <meta property="og:image" content="/og-image.svg" />
+    <meta property="og:image:alt" content="LuxeMode — Collection Printemps 2026" />
 
-    <!-- Twitter Card -->
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="LuxeMode - Mode Premium" />
+    <meta name="twitter:title" content="LuxeMode — Mode Premium" />
     <meta name="twitter:description" content="Collection Printemps 2026. Vêtements et accessoires premium." />
+    <meta name="twitter:image" content="/og-image.svg" />
 
-    <!-- Theme Color -->
-    <meta name="theme-color" content="#1E0F21" />
-
-    <!-- Preconnect to external resources -->
-    <link rel="preconnect" href="https://images.unsplash.com" />
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+    <link rel="preconnect" href="https://images.pexels.com" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <!-- Google Fonts - Inter + Playfair Display (luxury serif) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+    <!-- Fonts: preload as=style + onload swap to avoid render-blocking -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&display=swap"
+      />
+    </noscript>
+
+    <!-- JSON-LD: Organization + WebSite -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "name": "LuxeMode",
+            "url": "https://luxemode.app",
+            "logo": "https://luxemode.app/favicon.svg",
+            "sameAs": [
+              "https://instagram.com/",
+              "https://facebook.com/"
+            ],
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "email": "contact@luxemode.com",
+              "contactType": "Customer Service",
+              "areaServed": "CA",
+              "availableLanguage": ["French", "English"]
+            },
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Montréal",
+              "addressRegion": "QC",
+              "addressCountry": "CA"
+            }
+          },
+          {
+            "@type": "WebSite",
+            "name": "LuxeMode",
+            "url": "https://luxemode.app",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://luxemode.app/?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <div style="padding:2rem;text-align:center;font-family:sans-serif">
+        Cette boutique nécessite JavaScript activé. Please enable JavaScript to use LuxeMode.
+      </div>
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

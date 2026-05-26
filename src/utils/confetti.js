@@ -1,53 +1,88 @@
-// Simple confetti effect
-export default function confetti() {
-  const colors = ["#8B5CF6", "#EC4899", "#10B981", "#F59E0B", "#3B82F6"];
-  const confettiCount = 150;
+// Lightweight canvas confetti — brand palette (gold/champagne/bordeaux), GPU friendly.
+// Respects prefers-reduced-motion. Idempotent: starts a single animation per call.
 
-  for (let i = 0; i < confettiCount; i++) {
-    createConfettiPiece(colors[Math.floor(Math.random() * colors.length)], i);
-  }
-}
+const PALETTE = ["#C9A96E", "#E8D5B0", "#6B2D4A", "#4A1E3A", "#F5E6CC", "#A68B5B"];
+const PARTICLE_COUNT = 110;
+const DURATION_MS = 3200;
 
-function createConfettiPiece(color, index) {
-  const confetti = document.createElement("div");
-  confetti.style.cssText = `
-    position: fixed;
-    width: ${Math.random() * 10 + 5}px;
-    height: ${Math.random() * 10 + 5}px;
-    background: ${color};
-    left: ${Math.random() * 100}vw;
-    top: -20px;
-    opacity: ${Math.random() + 0.5};
-    border-radius: ${Math.random() > 0.5 ? "50%" : "0"};
-    pointer-events: none;
-    z-index: 9999;
-    animation: confetti-fall ${Math.random() * 3 + 2}s linear forwards;
-    animation-delay: ${index * 0.01}s;
-  `;
+export default function confetti(options = {}) {
+  if (typeof window === "undefined" || typeof document === "undefined") return;
 
-  document.body.appendChild(confetti);
+  const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  if (reduced) return;
 
-  // Add animation keyframes if not exists
-  if (!document.querySelector("#confetti-style")) {
-    const style = document.createElement("style");
-    style.id = "confetti-style";
-    style.textContent = `
-      @keyframes confetti-fall {
-        0% {
-          transform: translateY(0) rotate(0deg);
-          opacity: 1;
-        }
-        100% {
-          transform: translateY(100vh) rotate(720deg);
-          opacity: 0;
-        }
+  const colors = options.colors || PALETTE;
+  const count = options.count ?? PARTICLE_COUNT;
+  const duration = options.duration ?? DURATION_MS;
+
+  const canvas = document.createElement("canvas");
+  canvas.setAttribute("aria-hidden", "true");
+  canvas.style.cssText = `position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:9999;`;
+  document.body.appendChild(canvas);
+
+  const dpr = window.devicePixelRatio || 1;
+  const ctx = canvas.getContext("2d");
+  const resize = () => {
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    ctx.scale(dpr, dpr);
+  };
+  resize();
+
+  const W = window.innerWidth;
+  const particles = Array.from({ length: count }, () => ({
+    x: W / 2 + (Math.random() - 0.5) * W * 0.4,
+    y: -20 - Math.random() * 60,
+    vx: (Math.random() - 0.5) * 6,
+    vy: 2 + Math.random() * 4,
+    rot: Math.random() * Math.PI * 2,
+    vr: (Math.random() - 0.5) * 0.25,
+    size: 4 + Math.random() * 6,
+    color: colors[(Math.random() * colors.length) | 0],
+    shape: Math.random() > 0.5 ? "rect" : "circle",
+  }));
+
+  const start = performance.now();
+  let raf;
+
+  const tick = (now) => {
+    const elapsed = now - start;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (const p of particles) {
+      p.vy += 0.12;            // gravity
+      p.vx *= 0.995;           // air drag
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vr;
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = Math.max(0, 1 - elapsed / duration);
+      if (p.shape === "rect") {
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.4);
+      } else {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+        ctx.fill();
       }
-    `;
-    document.head.appendChild(style);
-  }
+      ctx.restore();
+    }
 
-  // Remove confetti after animation
-  setTimeout(() => {
-    confetti.remove();
-  }, 5000);
+    if (elapsed < duration) {
+      raf = requestAnimationFrame(tick);
+    } else {
+      cleanup();
+    }
+  };
+
+  const cleanup = () => {
+    cancelAnimationFrame(raf);
+    if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
+  };
+
+  raf = requestAnimationFrame(tick);
+  return cleanup;
 }

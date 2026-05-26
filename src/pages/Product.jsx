@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   ArrowLeft,
   Heart,
@@ -20,16 +20,35 @@ import { PRODUCTS } from "../data/products";
 import Button from "../components/ui/Button";
 import Badge from "../components/ui/Badge";
 import ProductCard from "../components/ProductCard";
+import usePageMeta from "../hooks/usePageMeta";
 
 const FALLBACK_IMAGE = "https://picsum.photos/seed/product/800/1200";
+
+const COLOR_MAP = {
+  noir: "#111", blanc: "#fff", marron: "#8B4513", cognac: "#C68E17",
+  beige: "#F5F5DC", gris: "#808080", camel: "#C19A6B", indigo: "#4B0082",
+  or: "#C9A96E", argent: "#C0C0C0", "bleu marine": "#000080", rouge: "#C41E3A",
+  rose: "#F4C2C2", "rose poudré": "#E8C4C4", champagne: "#F7E7CE",
+  bordeaux: "#6B2D4A", lavande: "#B57EDC", "bleu ciel": "#87CEEB",
+  havane: "#8B6914", crème: "#FFFDD0", nude: "#E3BC9A",
+};
+const getColorHex = (color) => COLOR_MAP[(color || "").toLowerCase()] || "#ccc";
 
 export default function Product() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { lang, addToCart, toggleWishlist, isWishlisted } = useApp();
+  const { lang, addToCart, toggleWishlist, isWishlisted, trackView, MAX_QTY, addToast } = useApp();
   const T = STR[lang];
 
-  const product = PRODUCTS.find((p) => p.id === parseInt(id));
+  const productId = useMemo(() => {
+    const n = Number.parseInt(id, 10);
+    return Number.isFinite(n) ? n : null;
+  }, [id]);
+
+  const product = useMemo(
+    () => (productId == null ? null : PRODUCTS.find((p) => p.id === productId)),
+    [productId]
+  );
 
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
@@ -38,24 +57,62 @@ export default function Product() {
   const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     if (product) {
       setSelectedSize(product.sizes?.[0] || "");
       setSelectedColor(product.colors?.[0] || "");
+      setQuantity(1);
+      setImageLoaded(false);
+      setImageError(false);
+      trackView(product.id);
     }
-  }, [id, product]);
+  }, [product, trackView]);
+
+  usePageMeta(
+    product
+      ? {
+          title: `${product.name[lang]} — ${product.category[lang]}`,
+          description: product.description[lang],
+          jsonLd: {
+            "@context": "https://schema.org/",
+            "@type": "Product",
+            name: product.name[lang],
+            description: product.description[lang],
+            image: product.image,
+            brand: { "@type": "Brand", name: "LuxeMode" },
+            category: product.category[lang],
+            offers: {
+              "@type": "Offer",
+              priceCurrency: "CAD",
+              price: product.price,
+              availability: product.inStock
+                ? "https://schema.org/InStock"
+                : "https://schema.org/OutOfStock",
+            },
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: product.rating,
+              reviewCount: product.reviews,
+            },
+          },
+        }
+      : { title: lang === "fr" ? "Produit introuvable" : "Product not found" }
+  );
 
   if (!product) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4">404</div>
-          <h1 className="text-2xl font-bold mb-4">
+      <div className="min-h-[70vh] flex items-center justify-center">
+        <div className="text-center px-4">
+          <div className="text-7xl font-serif font-bold text-gray-200 dark:text-gray-800">404</div>
+          <h1 className="text-2xl font-bold mb-2 mt-2 text-gray-900 dark:text-white">
             {lang === "fr" ? "Produit introuvable" : "Product not found"}
           </h1>
-          <Button onClick={() => navigate("/")}>
-            {T.back_shop}
-          </Button>
+          <p className="text-gray-500 dark:text-gray-400 mb-6">
+            {lang === "fr"
+              ? "Ce produit n'existe pas ou a été retiré."
+              : "This product does not exist or has been removed."}
+          </p>
+          <Button onClick={() => navigate("/")}>{T.back_shop}</Button>
         </div>
       </div>
     );
@@ -68,23 +125,24 @@ export default function Product() {
       : 0;
 
   const handleAddToCart = () => {
-    addToCart(product, {
-      size: selectedSize,
-      color: selectedColor,
-      qty: quantity,
-    });
+    addToCart(product, { size: selectedSize, color: selectedColor, qty: quantity });
   };
 
   const handleBuyNow = () => {
-    addToCart(product, {
-      size: selectedSize,
-      color: selectedColor,
-      qty: quantity,
-    });
+    addToCart(product, { size: selectedSize, color: selectedColor, qty: quantity });
     navigate("/cart");
   };
 
-  // Related products (same category)
+  const handleIncrement = () => {
+    setQuantity((q) => {
+      if (q >= MAX_QTY) {
+        addToast(T.available_qty, "info");
+        return q;
+      }
+      return q + 1;
+    });
+  };
+
   const relatedProducts = PRODUCTS.filter(
     (p) => p.category.en === product.category.en && p.id !== product.id
   ).slice(0, 4);
@@ -92,53 +150,60 @@ export default function Product() {
   return (
     <div className="min-h-screen py-8">
       <div className="container-luxe">
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-8">
+        <nav className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-8" aria-label="Fil d'Ariane">
           <Link to="/" className="hover:text-gray-900 dark:hover:text-white transition-colors">
             {T.nav_shop}
           </Link>
-          <ChevronRight className="w-4 h-4" />
-          <span className="text-gray-900 dark:text-white font-medium">
+          <ChevronRight className="w-4 h-4" aria-hidden="true" />
+          <Link
+            to={`/?g=${product.gender}`}
+            className="hover:text-gray-900 dark:hover:text-white transition-colors capitalize"
+          >
+            {product.gender === "femme" && (lang === "fr" ? "Femme" : "Women")}
+            {product.gender === "homme" && (lang === "fr" ? "Homme" : "Men")}
+            {product.gender === "enfant" && (lang === "fr" ? "Enfant" : "Children")}
+          </Link>
+          <ChevronRight className="w-4 h-4" aria-hidden="true" />
+          <span className="text-gray-900 dark:text-white font-medium truncate max-w-[200px]" aria-current="page">
             {product.name[lang]}
           </span>
         </nav>
 
-        {/* Back Button */}
-        <motion.button
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
+        <button
+          type="button"
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5" aria-hidden="true" />
           {T.back_shop}
-        </motion.button>
+        </button>
 
-        {/* Product Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Image */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
           >
-            <div className="relative aspect-[3/4] rounded-3xl overflow-hidden bg-gray-100 dark:bg-gray-800 sticky top-24">
-              {/* Skeleton */}
+            <div className="relative aspect-[3/4] rounded-3xl overflow-hidden bg-gray-100 dark:bg-luxury-charcoal/40 lg:sticky lg:top-24 shadow-xl">
               {!imageLoaded && !imageError && (
-                <div className="absolute inset-0 skeleton" />
+                <div className="absolute inset-0 skeleton" aria-hidden="true" />
               )}
 
               <img
                 src={imageError ? FALLBACK_IMAGE : product.image}
-                alt={product.name[lang]}
-                className={`w-full h-full object-cover transition-opacity duration-500 ${
+                alt={`${product.name[lang]} — ${product.category[lang]}`}
+                width={800}
+                height={1067}
+                className={`w-full h-full object-cover motion-safe:transition-opacity duration-500 ${
                   imageLoaded ? "opacity-100" : "opacity-0"
                 }`}
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
                 onLoad={() => setImageLoaded(true)}
                 onError={() => setImageError(true)}
               />
 
-              {/* Badges */}
               <div className="absolute top-4 left-4 flex flex-col gap-2">
                 {product.badge && (
                   <Badge variant={product.badge} size="lg">
@@ -152,54 +217,53 @@ export default function Product() {
                 )}
               </div>
 
-              {/* Wishlist */}
               <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+                type="button"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => toggleWishlist(product)}
                 className={`
                   absolute top-4 right-4 w-12 h-12 rounded-full
                   flex items-center justify-center shadow-lg
-                  transition-colors
+                  transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent
                   ${
                     wishlisted
                       ? "bg-red-500 text-white"
-                      : "bg-white/90 dark:bg-gray-800/90 text-gray-700 dark:text-gray-300 hover:bg-red-500 hover:text-white"
+                      : "bg-white/95 dark:bg-luxury-noir/90 text-gray-700 dark:text-gray-200 hover:bg-red-500 hover:text-white"
                   }
                 `}
+                aria-label={wishlisted ? T.remove_from_wishlist : T.add_to_wishlist}
+                aria-pressed={wishlisted}
               >
-                <Heart className={`w-6 h-6 ${wishlisted ? "fill-current" : ""}`} />
+                <Heart className={`w-6 h-6 ${wishlisted ? "fill-current" : ""}`} aria-hidden="true" />
               </motion.button>
             </div>
           </motion.div>
 
-          {/* Product Info */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
+            initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.15 }}
           >
-            {/* Category */}
-            <span className="text-sm font-medium uppercase tracking-wider text-accent dark:text-accent">
+            <span className="text-sm font-medium uppercase tracking-[0.2em] text-accent">
               {product.category[lang]}
             </span>
 
-            {/* Name */}
             <h1 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-white mt-2 mb-4">
               {product.name[lang]}
             </h1>
 
-            {/* Rating */}
-            <div className="flex items-center gap-4 mb-6">
+            <div className="flex flex-wrap items-center gap-4 mb-6" aria-label={`${product.rating}/5 sur ${product.reviews} avis`}>
               <div className="flex items-center gap-1">
-                {[...Array(5)].map((_, i) => (
+                {[0, 1, 2, 3, 4].map((i) => (
                   <Star
                     key={i}
                     className={`w-5 h-5 ${
                       i < Math.floor(product.rating)
-                        ? "text-amber-400 fill-amber-400"
-                        : "text-gray-300"
+                        ? "text-accent fill-accent"
+                        : "text-gray-300 dark:text-gray-600"
                     }`}
+                    aria-hidden="true"
                   />
                 ))}
               </div>
@@ -217,7 +281,6 @@ export default function Product() {
               </span>
             </div>
 
-            {/* Price */}
             <div className="flex items-center gap-4 mb-6">
               <span className="text-3xl font-bold text-gray-900 dark:text-white">
                 {formatPrice(product.price, lang)}
@@ -234,34 +297,39 @@ export default function Product() {
               )}
             </div>
 
-            {/* Description */}
             <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
               {product.description[lang]}
             </p>
 
-            {/* Size Selection */}
             {product.sizes?.length > 0 && (
-              <div className="mb-6">
+              <fieldset className="mb-6">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="font-semibold text-gray-900 dark:text-white">
+                  <legend className="font-semibold text-gray-900 dark:text-white">
                     {T.size}
-                  </span>
-                  <button className="text-sm text-accent dark:text-accent hover:underline">
+                  </legend>
+                  <button
+                    type="button"
+                    className="text-sm text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
+                  >
                     {T.size_guide}
                   </button>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={T.size}>
                   {product.sizes.map((size) => (
                     <button
                       key={size}
+                      type="button"
+                      role="radio"
+                      aria-checked={selectedSize === size}
                       onClick={() => setSelectedSize(size)}
                       className={`
                         min-w-[48px] h-12 px-4 rounded-xl font-medium
-                        transition-all duration-200
+                        transition-colors duration-200
+                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent
                         ${
                           selectedSize === size
-                            ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900 ring-2 ring-offset-2 ring-gray-900 dark:ring-white"
-                            : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                            ? "bg-luxury-charcoal dark:bg-accent text-accent dark:text-luxury-noir ring-2 ring-offset-2 ring-accent"
+                            : "bg-gray-100 dark:bg-luxury-charcoal/60 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-luxury-charcoal"
                         }
                       `}
                     >
@@ -269,66 +337,72 @@ export default function Product() {
                     </button>
                   ))}
                 </div>
-              </div>
+              </fieldset>
             )}
 
-            {/* Color Selection */}
             {product.colors?.length > 0 && (
-              <div className="mb-8">
-                <span className="font-semibold text-gray-900 dark:text-white mb-3 block">
-                  {T.color}: <span className="font-normal text-gray-600 dark:text-gray-400">{selectedColor}</span>
-                </span>
-                <div className="flex flex-wrap gap-3">
+              <fieldset className="mb-8">
+                <legend className="font-semibold text-gray-900 dark:text-white mb-3 block">
+                  {T.color}:{" "}
+                  <span className="font-normal text-gray-600 dark:text-gray-400">{selectedColor}</span>
+                </legend>
+                <div className="flex flex-wrap gap-3" role="radiogroup" aria-label={T.color}>
                   {product.colors.map((color) => (
                     <button
                       key={color}
+                      type="button"
+                      role="radio"
+                      aria-checked={selectedColor === color}
                       onClick={() => setSelectedColor(color)}
                       className={`
-                        relative px-4 py-2 rounded-xl border-2 transition-all
+                        relative inline-flex items-center gap-2 pl-2 pr-4 py-2 rounded-xl border-2 transition-colors
+                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent
                         ${
                           selectedColor === color
-                            ? "border-gray-900 dark:border-white"
-                            : "border-gray-200 dark:border-gray-700 hover:border-gray-400"
+                            ? "border-luxury-charcoal dark:border-accent bg-luxury-charcoal/5 dark:bg-accent/10"
+                            : "border-gray-200 dark:border-luxury-charcoal hover:border-gray-400 dark:hover:border-accent/40"
                         }
                       `}
                     >
-                      <span className="text-gray-700 dark:text-gray-300">{color}</span>
+                      <span
+                        className="w-5 h-5 rounded-full border border-white/60 dark:border-luxury-noir/60 shadow-sm ring-1 ring-gray-300 dark:ring-luxury-charcoal"
+                        style={{ backgroundColor: getColorHex(color) }}
+                        aria-hidden="true"
+                      />
+                      <span className="text-gray-700 dark:text-gray-200 text-sm">{color}</span>
                       {selectedColor === color && (
-                        <motion.div
-                          layoutId="color-check"
-                          className="absolute -top-1 -right-1 w-5 h-5 bg-gray-900 dark:bg-white rounded-full flex items-center justify-center"
-                        >
-                          <Check className="w-3 h-3 text-white dark:text-gray-900" />
-                        </motion.div>
+                        <Check className="w-4 h-4 text-accent" aria-hidden="true" />
                       )}
                     </button>
                   ))}
                 </div>
-              </div>
+              </fieldset>
             )}
 
-            {/* Quantity & Actions */}
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              {/* Quantity */}
-              <div className="flex items-center border-2 border-gray-200 dark:border-gray-700 rounded-xl">
+              <div className="flex items-center border-2 border-gray-200 dark:border-luxury-charcoal rounded-xl" aria-label={T.quantity}>
                 <button
+                  type="button"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="w-12 h-12 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  className="w-12 h-12 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-luxury-charcoal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-l-xl"
+                  aria-label={lang === "fr" ? "Diminuer la quantité" : "Decrease quantity"}
                 >
-                  <Minus className="w-5 h-5" />
+                  <Minus className="w-5 h-5" aria-hidden="true" />
                 </button>
-                <span className="w-16 text-center font-semibold text-gray-900 dark:text-white">
+                <span className="w-16 text-center font-semibold text-gray-900 dark:text-white" aria-live="polite">
                   {quantity}
                 </span>
                 <button
-                  onClick={() => setQuantity((q) => q + 1)}
-                  className="w-12 h-12 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  type="button"
+                  onClick={handleIncrement}
+                  disabled={quantity >= MAX_QTY}
+                  className="w-12 h-12 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-luxury-charcoal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-r-xl disabled:opacity-40 disabled:cursor-not-allowed"
+                  aria-label={lang === "fr" ? "Augmenter la quantité" : "Increase quantity"}
                 >
-                  <Plus className="w-5 h-5" />
+                  <Plus className="w-5 h-5" aria-hidden="true" />
                 </button>
               </div>
 
-              {/* Add to Cart */}
               <Button
                 size="lg"
                 icon={ShoppingBag}
@@ -339,7 +413,6 @@ export default function Product() {
                 {T.add_to_cart}
               </Button>
 
-              {/* Buy Now */}
               <Button
                 variant="secondary"
                 size="lg"
@@ -350,16 +423,15 @@ export default function Product() {
               </Button>
             </div>
 
-            {/* Features */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-6 bg-gray-50 dark:bg-gray-800/50 rounded-2xl">
+            <ul className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-6 bg-gray-50 dark:bg-luxury-charcoal/30 rounded-2xl border border-gray-100 dark:border-luxury-charcoal/60">
               {[
                 { icon: Truck, title: T.free_shipping, desc: T.orders_over },
                 { icon: Shield, title: T.secure_pay, desc: T.secure_badge },
                 { icon: RotateCcw, title: T.free_returns, desc: T.returns_details },
-              ].map((feature, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-accent/10 dark:bg-accent/20 flex items-center justify-center flex-shrink-0">
-                    <feature.icon className="w-5 h-5 text-accent dark:text-accent" />
+              ].map((feature) => (
+                <li key={feature.title} className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-accent/10 dark:bg-accent/15 flex items-center justify-center flex-shrink-0">
+                    <feature.icon className="w-5 h-5 text-accent" aria-hidden="true" />
                   </div>
                   <div>
                     <div className="font-medium text-gray-900 dark:text-white text-sm">
@@ -369,16 +441,15 @@ export default function Product() {
                       {feature.desc}
                     </div>
                   </div>
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           </motion.div>
         </div>
 
-        {/* Related Products */}
         {relatedProducts.length > 0 && (
-          <section className="mt-20">
-            <h2 className="text-2xl font-serif font-bold text-gray-900 dark:text-white mb-8">
+          <section className="mt-20" aria-labelledby="related-heading">
+            <h2 id="related-heading" className="text-2xl md:text-3xl font-serif font-bold text-gray-900 dark:text-white mb-8">
               {lang === "fr" ? "Vous aimerez aussi" : "You might also like"}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

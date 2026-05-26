@@ -112,16 +112,17 @@ export default function Hero() {
               variants={itemVariants}
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
-              <Link to="/">
+              <a href="#products">
                 <Button
                   size="lg"
+                  variant="gold"
                   icon={ArrowRight}
                   iconPosition="right"
-                  className="min-w-[220px] bg-accent hover:bg-accent-dark text-luxury-noir border-0"
+                  className="min-w-[220px]"
                 >
                   {T.shop_now}
                 </Button>
-              </Link>
+              </a>
               <Link to="/about">
                 <Button
                   variant="ghost"
@@ -143,31 +144,36 @@ export default function Hero() {
           >
             {CATEGORY_SHOWCASE.map((cat, i) => (
               <motion.div
-                key={i}
+                key={cat.gender}
                 variants={itemVariants}
                 whileHover={{ y: -8, scale: 1.02 }}
                 transition={{ duration: 0.4 }}
               >
                 <Link
                   to={`/?g=${cat.gender}`}
-                  className="block relative group rounded-2xl overflow-hidden aspect-[3/4]"
+                  className="block relative group rounded-2xl overflow-hidden aspect-[3/4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  aria-label={`${cat.label[lang]} — ${T.discover}`}
                 >
                   <img
                     src={cat.image}
-                    alt={cat.label[lang]}
+                    alt={`Collection ${cat.label[lang]} LuxeMode`}
+                    width={600}
+                    height={800}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    loading="lazy"
+                    loading={i === 0 ? "eager" : "lazy"}
+                    fetchpriority={i === 0 ? "high" : "auto"}
+                    decoding="async"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-luxury-noir/80 via-luxury-plum/30 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-luxury-noir/80 via-luxury-plum/30 to-transparent" aria-hidden="true" />
                   <div className="absolute bottom-0 left-0 right-0 p-6">
                     <h3 className="font-serif text-2xl md:text-3xl font-bold text-white mb-2">
                       {cat.label[lang]}
                     </h3>
                     <span className="inline-flex items-center gap-2 text-accent text-sm font-medium uppercase tracking-wider group-hover:gap-3 transition-all">
-                      {T.discover} <ArrowRight className="w-4 h-4" />
+                      {T.discover} <ArrowRight className="w-4 h-4" aria-hidden="true" />
                     </span>
                   </div>
-                  <div className="absolute inset-0 border-2 border-transparent group-hover:border-accent/30 rounded-2xl transition-colors duration-300" />
+                  <div className="absolute inset-0 border-2 border-transparent group-hover:border-accent/30 rounded-2xl transition-colors duration-300" aria-hidden="true" />
                 </Link>
               </motion.div>
             ))}
@@ -198,14 +204,14 @@ export default function Hero() {
         </div>
 
         {/* Marquee Banner */}
-        <div className="border-t border-b border-accent/10 py-4 overflow-hidden bg-luxury-noir/30">
+        <div className="border-t border-b border-accent/10 py-4 overflow-hidden bg-luxury-noir/30" aria-hidden="true">
           <div className="marquee-track">
             {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
               <span
                 key={i}
-                className="flex items-center gap-6 mx-8 text-sm font-medium tracking-[0.25em] text-luxury-rose/60 uppercase whitespace-nowrap"
+                className="flex items-center gap-6 mx-8 text-sm font-medium tracking-[0.25em] text-accent-light/70 uppercase whitespace-nowrap"
               >
-                <Diamond className="w-3 h-3 text-accent/40" />
+                <Diamond className="w-3 h-3 text-accent/50" />
                 {item}
               </span>
             ))}

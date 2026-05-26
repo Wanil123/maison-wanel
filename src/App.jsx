@@ -3,11 +3,11 @@ import { AppProvider, useApp } from "./context/AppContext";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import Toast from "./components/ui/Toast";
+import ErrorBoundary from "./components/ui/ErrorBoundary";
 import { AnimatePresence, motion } from "framer-motion";
 import { lazy, Suspense, useEffect } from "react";
 import { STR } from "./data/translations";
 
-// Lazy-loaded pages (code splitting)
 const Shop = lazy(() => import("./pages/Shop"));
 const Product = lazy(() => import("./pages/Product"));
 const Cart = lazy(() => import("./pages/Cart"));
@@ -16,26 +16,23 @@ const Wishlist = lazy(() => import("./pages/Wishlist"));
 const About = lazy(() => import("./pages/About"));
 const Thanks = lazy(() => import("./pages/Thanks"));
 
-// Loading fallback
 function PageLoader() {
   return (
-    <div className="min-h-[60vh] flex items-center justify-center">
+    <div className="min-h-[60vh] flex items-center justify-center" role="status" aria-live="polite">
       <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+      <span className="sr-only">Chargement…</span>
     </div>
   );
 }
 
 function ScrollToTop() {
-  const { pathname, search } = useLocation();
-
+  const { pathname } = useLocation();
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname, search]);
-
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [pathname]);
   return null;
 }
 
-// Page transition wrapper
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
   animate: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.23, 1, 0.32, 1] } },
@@ -59,13 +56,20 @@ function PageTransition({ children }) {
   );
 }
 
-// Layout wrapper
 function Layout({ children }) {
   return (
     <div className="min-h-screen flex flex-col bg-luxury-ivory dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-500">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-luxury-charcoal focus:text-accent focus:rounded-lg focus:shadow-lg"
+      >
+        Aller au contenu principal
+      </a>
       <Header />
-      <main className="flex-1">
-        <PageTransition>{children}</PageTransition>
+      <main id="main-content" className="flex-1">
+        <ErrorBoundary>
+          <PageTransition>{children}</PageTransition>
+        </ErrorBoundary>
       </main>
       <Footer />
       <Toast />
@@ -73,7 +77,6 @@ function Layout({ children }) {
   );
 }
 
-// 404 Page
 function NotFound() {
   const { lang } = useApp();
   const T = STR[lang];
@@ -89,9 +92,9 @@ function NotFound() {
         </p>
         <Link
           to="/"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-luxury-charcoal dark:bg-accent text-white dark:text-luxury-noir font-semibold rounded-xl hover:opacity-90 transition-opacity"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-luxury-charcoal text-accent border border-accent/20 font-semibold rounded-xl hover:bg-luxury-wine transition-colors"
         >
-          {lang === "fr" ? "Retour à l'accueil" : "Back to home"}
+          {T.back_shop}
         </Link>
       </div>
     </div>

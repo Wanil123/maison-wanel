@@ -199,6 +199,24 @@ export const STR = {
     wishlist_added: "Ajouté aux favoris",
     wishlist_removed: "Retiré des favoris",
     order_confirmed: "Commande confirmée",
+
+    // Legal / Misc additions
+    accept_terms: "J'accepte les",
+    terms_link: "conditions générales",
+    and: "et la",
+    privacy_link: "politique de confidentialité",
+    must_accept_terms: "Vous devez accepter les conditions générales",
+    invalid_postal_ca: "Code postal canadien invalide (ex : H2X 1Y4)",
+    invalid_expiry: "Date d'expiration invalide",
+    expired_card: "La carte est expirée",
+    invalid_card_luhn: "Numéro de carte invalide",
+    promo_invalid: "Code promo invalide",
+    promo_applied: "Code promo appliqué",
+    promo_already_used: "Code déjà appliqué",
+    scroll_to_products: "Voir la collection",
+    recently_viewed: "Vus récemment",
+    available_qty: "Quantité maximale atteinte",
+    contact_us: "Nous contacter",
   },
 
   en: {
@@ -400,8 +418,38 @@ export const STR = {
     wishlist_added: "Added to wishlist",
     wishlist_removed: "Removed from wishlist",
     order_confirmed: "Order confirmed",
+
+    // Legal / Misc additions
+    accept_terms: "I accept the",
+    terms_link: "terms and conditions",
+    and: "and the",
+    privacy_link: "privacy policy",
+    must_accept_terms: "You must accept the terms and conditions",
+    invalid_postal_ca: "Invalid Canadian postal code (e.g. H2X 1Y4)",
+    invalid_expiry: "Invalid expiry date",
+    expired_card: "Card is expired",
+    invalid_card_luhn: "Invalid card number",
+    promo_invalid: "Invalid promo code",
+    promo_applied: "Promo code applied",
+    promo_already_used: "Code already applied",
+    scroll_to_products: "Browse the collection",
+    recently_viewed: "Recently viewed",
+    available_qty: "Maximum quantity reached",
+    contact_us: "Contact us",
   },
 };
 
-export const formatPrice = (n, lang) =>
-  lang === "fr" ? `${n.toFixed(2)} $` : `$${n.toFixed(2)}`;
+export const formatPrice = (n, lang) => {
+  const value = Number.isFinite(n) ? n : 0;
+  const locale = lang === "fr" ? "fr-CA" : "en-CA";
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: "CAD",
+      currencyDisplay: "narrowSymbol",
+      maximumFractionDigits: 2,
+    }).format(value);
+  } catch {
+    return lang === "fr" ? `${value.toFixed(2)} $` : `$${value.toFixed(2)}`;
+  }
+};

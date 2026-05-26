@@ -1,12 +1,17 @@
 {
   "name": "luxemode-react",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "LuxeMode — boutique e-commerce de mode premium (React 19 + Vite 7 + Tailwind 3).",
+  "engines": {
+    "node": ">=20.19"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "preview": "vite preview"
   },
   "dependencies": {

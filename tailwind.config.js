@@ -17,17 +17,30 @@ export default {
           gold: '#C9A96E',
           champagne: '#F5E6CC',
           cream: '#FBF8F2',
-          noir: '#1E0F21',        // deep plum — NOT black
-          charcoal: '#2D1B30',    // warm dark burgundy
-          wine: '#6B2D4A',        // rich wine/burgundy
-          plum: '#4A1E3A',        // dark plum
-          rose: '#D4A0A0',        // soft dusty rose
-          ivory: '#FAF4EB',       // warm ivory
+          noir: '#1E0F21',
+          charcoal: '#2D1B30',
+          wine: '#6B2D4A',
+          plum: '#4A1E3A',
+          rose: '#D4A0A0',
+          ivory: '#FAF4EB',
         },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        serif: ['Playfair Display', 'Georgia', 'serif'],
+        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+      },
+      letterSpacing: {
+        luxe: '0.2em',
+        wide: '0.05em',
+      },
+      transitionTimingFunction: {
+        luxe: 'cubic-bezier(0.23, 1, 0.32, 1)',
+        emphasis: 'cubic-bezier(0.77, 0, 0.175, 1)',
+      },
+      boxShadow: {
+        luxe: '0 25px 50px -12px rgba(30, 15, 33, 0.18)',
+        gold: '0 12px 30px -10px rgba(201, 169, 110, 0.35)',
+        wine: '0 12px 30px -10px rgba(107, 45, 74, 0.35)',
       },
       animation: {
         'fade-up': 'fadeUp 0.8s ease-out forwards',
@@ -74,4 +87,4 @@ export default {
     },
   },
   plugins: [],
-}
+};
