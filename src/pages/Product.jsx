@@ -148,9 +148,9 @@ export default function Product() {
   ).slice(0, 4);
 
   return (
-    <div className="min-h-screen py-8">
+    <div className="min-h-screen py-4 sm:py-8">
       <div className="container-luxe">
-        <nav className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-8" aria-label="Fil d'Ariane">
+        <nav className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-4 sm:mb-8 overflow-x-auto whitespace-nowrap" aria-label="Fil d'Ariane">
           <Link to="/" className="hover:text-gray-900 dark:hover:text-white transition-colors">
             {T.nav_shop}
           </Link>
@@ -172,13 +172,13 @@ export default function Product() {
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
+          className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-4 sm:mb-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
         >
-          <ArrowLeft className="w-5 h-5" aria-hidden="true" />
+          <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
           {T.back_shop}
         </button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-12">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
@@ -249,7 +249,7 @@ export default function Product() {
               {product.category[lang]}
             </span>
 
-            <h1 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-white mt-2 mb-4">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-white mt-2 mb-3 sm:mb-4 leading-tight">
               {product.name[lang]}
             </h1>
 
@@ -448,11 +448,11 @@ export default function Product() {
         </div>
 
         {relatedProducts.length > 0 && (
-          <section className="mt-20" aria-labelledby="related-heading">
-            <h2 id="related-heading" className="text-2xl md:text-3xl font-serif font-bold text-gray-900 dark:text-white mb-8">
+          <section className="mt-12 sm:mt-20" aria-labelledby="related-heading">
+            <h2 id="related-heading" className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-gray-900 dark:text-white mb-4 sm:mb-8">
               {lang === "fr" ? "Vous aimerez aussi" : "You might also like"}
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-6">
               {relatedProducts.map((p, i) => (
                 <ProductCard key={p.id} product={p} index={i} />
               ))}

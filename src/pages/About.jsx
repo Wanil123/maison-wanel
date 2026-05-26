@@ -77,7 +77,7 @@ export default function About() {
           />
         </div>
 
-        <div className="container-luxe relative py-20 md:py-32">
+        <div className="container-luxe relative py-12 sm:py-20 md:py-32">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8">
             <Link to="/" className="hover:text-white transition-colors">
@@ -101,7 +101,7 @@ export default function About() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-4xl md:text-6xl font-serif font-bold mb-6"
+              className="text-3xl sm:text-4xl md:text-6xl font-serif font-bold mb-4 sm:mb-6 leading-tight"
             >
               {T.about_title}
             </motion.h1>
@@ -110,7 +110,7 @@ export default function About() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-xl text-gray-300 mb-8"
+              className="text-base sm:text-lg md:text-xl text-gray-300 mb-6 sm:mb-8"
             >
               {T.about_subtitle}
             </motion.p>
@@ -136,20 +136,20 @@ export default function About() {
 
         {/* Stats */}
         <div className="border-t border-white/10">
-          <div className="container-luxe py-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="container-luxe py-6 sm:py-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
               {stats.map((stat, i) => (
                 <motion.div
-                  key={i}
+                  key={stat.label}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 + i * 0.1 }}
                   className="text-center"
                 >
-                  <div className="text-3xl md:text-4xl font-bold mb-1">
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold mb-1">
                     {stat.value}
                   </div>
-                  <div className="text-gray-400 text-sm">{stat.label}</div>
+                  <div className="text-gray-400 text-xs sm:text-sm">{stat.label}</div>
                 </motion.div>
               ))}
             </div>
@@ -158,9 +158,9 @@ export default function About() {
       </section>
 
       {/* Story Section */}
-      <section ref={containerRef} className="py-20 overflow-hidden">
+      <section ref={containerRef} className="py-12 sm:py-20 overflow-hidden">
         <div className="container-luxe">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -169,7 +169,7 @@ export default function About() {
               <span className="text-sm font-semibold uppercase tracking-wider text-accent dark:text-accent">
                 {T.our_story}
               </span>
-              <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-white mt-2 mb-6">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-white mt-2 mb-4 sm:mb-6">
                 {lang === "fr"
                   ? "Une passion pour l'excellence"
                   : "A passion for excellence"}
@@ -193,7 +193,7 @@ export default function About() {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="absolute -bottom-6 -left-6 w-48 h-48 rounded-2xl overflow-hidden shadow-xl border-4 border-white dark:border-luxury-noir">
+              <div className="absolute -bottom-4 -left-4 sm:-bottom-6 sm:-left-6 w-28 h-28 sm:w-48 sm:h-48 rounded-2xl overflow-hidden shadow-xl border-4 border-white dark:border-luxury-noir">
                 <img
                   src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=400&q=80"
                   alt={lang === "fr" ? "Détail couture — finitions premium" : "Couture detail — premium finishes"}
@@ -210,23 +210,23 @@ export default function About() {
       </section>
 
       {/* Values Section */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-900/50">
+      <section className="py-12 sm:py-20 bg-gray-50 dark:bg-luxury-charcoal/30">
         <div className="container-luxe">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="text-center mb-8 sm:mb-12"
           >
-            <span className="text-sm font-semibold uppercase tracking-wider text-accent dark:text-accent">
+            <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-accent">
               {T.our_mission}
             </span>
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-white mt-2">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-white mt-2">
               {T.about_values}
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8">
             {values.map((value, i) => (
               <motion.div
                 key={i}
@@ -235,7 +235,7 @@ export default function About() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
                 whileHover={{ y: -8 }}
-                className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700"
+                className="bg-white dark:bg-luxury-charcoal/40 rounded-2xl p-6 sm:p-8 shadow-lg border border-gray-100 dark:border-luxury-charcoal"
               >
                 <div
                   className={`
@@ -256,16 +256,16 @@ export default function About() {
       </section>
 
       {/* Sustainability Section */}
-      <section className="py-20">
+      <section className="py-12 sm:py-20">
         <div className="container-luxe">
           <div className="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-3xl overflow-hidden">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div className="p-8 md:p-12 text-white">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8">
+              <div className="p-6 sm:p-8 md:p-12 text-white">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 text-sm font-medium mb-6">
                   <Leaf className="w-4 h-4" />
                   {lang === "fr" ? "Engagement responsable" : "Sustainable commitment"}
                 </div>
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 leading-tight">
                   {lang === "fr"
                     ? "Mode responsable, style intemporel"
                     : "Responsible fashion, timeless style"}
@@ -307,14 +307,14 @@ export default function About() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-wine-hero text-white grain-overlay relative">
+      <section className="py-12 sm:py-20 bg-wine-hero text-white grain-overlay relative">
         <div className="container-luxe text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-5xl font-serif font-bold mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-serif font-bold mb-3 sm:mb-4 leading-tight">
               {lang === "fr"
                 ? "Prêt à découvrir notre collection ?"
                 : "Ready to explore our collection?"}

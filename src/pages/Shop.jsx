@@ -149,7 +149,7 @@ export default function Shop() {
           )}
 
           {/* Toolbar Row — search, sort, grid toggle */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-6">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
             {/* Search */}
             <div className="relative flex-1 sm:max-w-xs">
               <label htmlFor="shop-search" className="sr-only">
@@ -254,7 +254,7 @@ export default function Shop() {
           </div>
 
           {/* Info bar — product count + active filter chips */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-4 sm:mb-8 flex-wrap gap-2">
             <span className="text-sm text-gray-500 dark:text-gray-400 font-light">
               {filteredProducts.length} {T.products_count}
             </span>
@@ -294,12 +294,12 @@ export default function Shop() {
             )}
           </div>
 
-          {/* Products Grid */}
+          {/* Products Grid — 3 col mobile, plus large au-dela */}
           {filteredProducts.length > 0 ? (
             <div
               className={`
-                grid gap-8
-                grid-cols-1 sm:grid-cols-2 lg:grid-cols-3
+                grid gap-2 sm:gap-6 lg:gap-8
+                grid-cols-3 sm:grid-cols-3 lg:grid-cols-3
                 ${gridCols === 4 ? "xl:grid-cols-4" : "xl:grid-cols-3"}
               `}
             >

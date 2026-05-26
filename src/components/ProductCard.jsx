@@ -74,12 +74,12 @@ function ProductCard({ product, index = 0 }) {
     toggleWishlist(product);
   }, [toggleWishlist, product]);
 
-  const cappedDelay = Math.min(index, 6) * 0.05;
+  const cappedDelay = Math.min(index, 6) * 0.04;
   const thumbSrc = imageError ? FALLBACK_IMAGE : getThumbUrl(product.image);
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: cappedDelay, ease: [0.23, 1, 0.32, 1] }}
       className="group relative"
@@ -87,9 +87,9 @@ function ProductCard({ product, index = 0 }) {
       <Link
         to={`/product/${product.id}`}
         aria-label={`${product.name[lang]} — ${formatPrice(product.price, lang)}`}
-        className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-luxury-ivory dark:focus-visible:ring-offset-gray-900 rounded-2xl"
+        className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-luxury-ivory dark:focus-visible:ring-offset-gray-900 rounded-xl sm:rounded-2xl"
       >
-        <div className="relative bg-white dark:bg-luxury-charcoal/40 rounded-2xl overflow-hidden luxury-card border border-gray-100 dark:border-luxury-charcoal">
+        <div className="relative bg-white dark:bg-luxury-charcoal/40 rounded-xl sm:rounded-2xl overflow-hidden luxury-card border border-gray-100 dark:border-luxury-charcoal">
           <div className="relative aspect-[3/4] overflow-hidden bg-gray-50 dark:bg-luxury-noir">
             {!imageLoaded && !imageError && (
               <div className="absolute inset-0 skeleton" aria-hidden="true" />
@@ -104,34 +104,37 @@ function ProductCard({ product, index = 0 }) {
                 w-full h-full object-cover img-zoom motion-safe:transition-opacity duration-500
                 ${imageLoaded ? "opacity-100" : "opacity-0"}
               `}
-              loading={index < 4 ? "eager" : "lazy"}
+              loading={index < 6 ? "eager" : "lazy"}
               fetchpriority={index === 0 ? "high" : "auto"}
               decoding="async"
               onLoad={() => setImageLoaded(true)}
               onError={() => setImageError(true)}
             />
 
-            {/* Hover overlay (CSS only, no re-renders) */}
+            {/* Hover overlay (CSS only) */}
             <div className="absolute inset-0 bg-gradient-to-t from-luxury-noir/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-            <div className="absolute top-3 left-3 flex flex-col gap-2">
+            {/* Badges — mobile petits, desktop normaux */}
+            <div className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 flex flex-col gap-1 sm:gap-2">
               {product.badge && (
-                <Badge variant={product.badge} size="md" animated>
+                <Badge variant={product.badge} size="sm" animated className="sm:!px-3 sm:!py-1 sm:!text-xs">
                   {T[product.badge]}
                 </Badge>
               )}
               {discount > 0 && (
-                <Badge variant="sale" size="md">
+                <Badge variant="sale" size="sm" className="sm:!px-3 sm:!py-1 sm:!text-xs">
                   -{discount}%
                 </Badge>
               )}
             </div>
 
+            {/* Wishlist — petit sur mobile pour 3 col */}
             <button
               type="button"
               onClick={handleWishlist}
               className={`
-                absolute top-3 right-3 w-10 h-10 rounded-full
+                absolute top-1.5 right-1.5 sm:top-3 sm:right-3
+                w-7 h-7 sm:w-10 sm:h-10 rounded-full
                 flex items-center justify-center
                 transition-all duration-300 shadow-lg
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent
@@ -144,11 +147,14 @@ function ProductCard({ product, index = 0 }) {
               aria-label={wishlisted ? T.remove_from_wishlist : T.add_to_wishlist}
               aria-pressed={wishlisted}
             >
-              <Heart className={`w-4 h-4 transition-all ${wishlisted ? "fill-current" : ""}`} aria-hidden="true" />
+              <Heart
+                className={`w-3 h-3 sm:w-4 sm:h-4 transition-all ${wishlisted ? "fill-current" : ""}`}
+                aria-hidden="true"
+              />
             </button>
 
-            {/* Quick add — CSS hover only */}
-            <div className="absolute bottom-4 left-4 right-4 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto">
+            {/* Quick add — desktop hover only (les mobiles tapent directement la card) */}
+            <div className="hidden sm:block absolute bottom-4 left-4 right-4 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto">
               <button
                 type="button"
                 onClick={handleQuickAdd}
@@ -172,49 +178,51 @@ function ProductCard({ product, index = 0 }) {
 
             {!product.inStock && (
               <div className="absolute inset-0 bg-luxury-noir/40 backdrop-blur-[2px] flex items-center justify-center pointer-events-none">
-                <span className="px-5 py-2 bg-white/95 rounded-lg font-medium text-luxury-noir text-sm tracking-wide">
+                <span className="px-2 py-1 sm:px-5 sm:py-2 bg-white/95 rounded-md sm:rounded-lg font-medium text-luxury-noir text-[10px] sm:text-sm tracking-wide">
                   {T.coming_soon}
                 </span>
               </div>
             )}
           </div>
 
-          <div className="p-5">
-            <div className="flex items-center justify-between mb-2.5">
-              <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-accent">
+          {/* Info — compact mobile, normal desktop */}
+          <div className="p-2 sm:p-4 lg:p-5">
+            <div className="flex items-center justify-between mb-1 sm:mb-2.5">
+              <span className="text-[8px] sm:text-[11px] font-medium uppercase tracking-[0.1em] sm:tracking-[0.15em] text-accent truncate max-w-[70%]">
                 {product.category[lang]}
               </span>
-              <div className="flex items-center gap-1 text-sm" aria-label={`${product.rating} sur 5 (${product.reviews} ${T.reviews_count})`}>
-                <Star className="w-3.5 h-3.5 text-accent fill-accent" aria-hidden="true" />
-                <span className="font-medium text-gray-700 dark:text-gray-300 text-xs">
+              <div
+                className="flex items-center gap-0.5 sm:gap-1 text-xs flex-shrink-0"
+                aria-label={`${product.rating}/5 (${product.reviews} ${T.reviews_count})`}
+              >
+                <Star className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 text-accent fill-accent" aria-hidden="true" />
+                <span className="font-medium text-gray-700 dark:text-gray-300 text-[10px] sm:text-xs">
                   {product.rating}
                 </span>
-                <span className="text-gray-400 text-xs">({product.reviews})</span>
               </div>
             </div>
 
-            <h3 className="font-serif font-semibold text-gray-900 dark:text-white line-clamp-1 mb-2.5 text-lg group-hover:text-accent transition-colors duration-300">
+            <h3 className="font-serif font-semibold text-gray-900 dark:text-white line-clamp-2 sm:line-clamp-1 mb-1 sm:mb-2.5 text-xs sm:text-base lg:text-lg leading-tight group-hover:text-accent transition-colors duration-300">
               {product.name[lang]}
             </h3>
 
-            <div className="flex items-center gap-2.5">
-              <span className="text-lg font-bold text-gray-900 dark:text-white">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2.5">
+              <span className="text-xs sm:text-base lg:text-lg font-bold text-gray-900 dark:text-white">
                 {formatPrice(product.price, lang)}
               </span>
               {product.originalPrice > product.price && (
-                <span className="text-sm text-gray-400 line-through">
+                <span className="hidden sm:inline text-sm text-gray-400 line-through">
                   {formatPrice(product.originalPrice, lang)}
-                </span>
-              )}
-              {discount > 0 && (
-                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                  -{discount}%
                 </span>
               )}
             </div>
 
+            {/* Pastilles couleur — cachées si trop étroit (mobile 3 col) */}
             {product.colors?.length > 0 && (
-              <div className="flex items-center gap-1.5 mt-3.5" aria-label={`${product.colors.length} ${lang === "fr" ? "coloris" : "colors"}`}>
+              <div
+                className="hidden sm:flex items-center gap-1.5 mt-3"
+                aria-label={`${product.colors.length} ${lang === "fr" ? "coloris" : "colors"}`}
+              >
                 {product.colors.slice(0, 4).map((color) => (
                   <span
                     key={color}
@@ -229,6 +237,13 @@ function ProductCard({ product, index = 0 }) {
                     +{product.colors.length - 4}
                   </span>
                 )}
+              </div>
+            )}
+
+            {/* Compteur couleurs minimal sur mobile */}
+            {product.colors?.length > 0 && (
+              <div className="sm:hidden mt-1 text-[9px] text-gray-400 uppercase tracking-wider">
+                {product.colors.length} {lang === "fr" ? "coloris" : "colors"}
               </div>
             )}
           </div>

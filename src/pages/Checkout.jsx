@@ -211,9 +211,9 @@ export default function Checkout() {
   ];
 
   return (
-    <div className="min-h-screen py-8">
+    <div className="min-h-screen py-4 sm:py-8">
       <div className="container-luxe">
-        <nav className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-8" aria-label="Fil d'Ariane">
+        <nav className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-4 sm:mb-8" aria-label="Fil d'Ariane">
           <Link to="/" className="hover:text-gray-900 dark:hover:text-white">{T.nav_shop}</Link>
           <ChevronRight className="w-4 h-4" aria-hidden="true" />
           <Link to="/cart" className="hover:text-gray-900 dark:hover:text-white">{T.cart}</Link>
@@ -221,7 +221,7 @@ export default function Checkout() {
           <span className="text-gray-900 dark:text-white font-medium" aria-current="page">{T.checkout}</span>
         </nav>
 
-        <ol className="flex items-center justify-center gap-4 md:gap-8 mb-12" aria-label="Étapes du paiement">
+        <ol className="flex items-center justify-center gap-2 md:gap-8 mb-6 sm:mb-12" aria-label="Étapes du paiement">
           {steps.map((s, i) => (
             <li key={s.num} className="flex items-center">
               <motion.div
@@ -251,7 +251,7 @@ export default function Checkout() {
           ))}
         </ol>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
           <div className="lg:col-span-2">
             <AnimatePresence mode="wait">
               {step === 1 && (

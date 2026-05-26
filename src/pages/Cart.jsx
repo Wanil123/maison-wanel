@@ -114,9 +114,9 @@ export default function Cart() {
   }
 
   return (
-    <div className="min-h-screen py-8">
+    <div className="min-h-screen py-4 sm:py-8">
       <div className="container-luxe">
-        <nav className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-8" aria-label="Fil d'Ariane">
+        <nav className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-4 sm:mb-8" aria-label="Fil d'Ariane">
           <Link to="/" className="hover:text-gray-900 dark:hover:text-white transition-colors">
             {T.nav_shop}
           </Link>
@@ -129,12 +129,12 @@ export default function Cart() {
         <motion.h1
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-3xl font-serif font-bold text-gray-900 dark:text-white mb-8"
+          className="text-2xl sm:text-3xl font-serif font-bold text-gray-900 dark:text-white mb-4 sm:mb-8"
         >
           {T.cart_title(cart.length)}
         </motion.h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
           <div className="lg:col-span-2 space-y-4">
             <AnimatePresence mode="popLayout">
               {cart.map((item, index) => (

@@ -69,7 +69,7 @@ export default function Hero() {
 
       {/* Content — NO scroll fade */}
       <div className="relative z-10">
-        <div className="container-luxe py-24 md:py-36 lg:py-44">
+        <div className="container-luxe py-16 sm:py-24 md:py-36 lg:py-44">
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -77,32 +77,32 @@ export default function Hero() {
             className="max-w-4xl mx-auto text-center"
           >
             {/* Luxury badge */}
-            <motion.div variants={itemVariants} className="mb-8">
-              <span className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full glass-luxury text-accent text-sm font-medium tracking-wider uppercase">
-                <Diamond className="w-4 h-4" />
+            <motion.div variants={itemVariants} className="mb-5 sm:mb-8">
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-5 sm:py-2.5 rounded-full glass-luxury text-accent text-[10px] sm:text-sm font-medium tracking-wider uppercase">
+                <Diamond className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />
                 {T.new_arrivals} 2026
               </span>
             </motion.div>
 
             {/* Title */}
-            <motion.h1 variants={itemVariants} className="mb-8">
-              <span className="block font-serif text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-[0.95] tracking-tight">
+            <motion.h1 variants={itemVariants} className="mb-5 sm:mb-8">
+              <span className="block font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white leading-[0.95] tracking-tight">
                 {T.hero_title}
               </span>
-              <span className="block font-serif text-5xl md:text-7xl lg:text-8xl font-bold mt-3 leading-[0.95] tracking-tight">
+              <span className="block font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mt-2 sm:mt-3 leading-[0.95] tracking-tight">
                 <span className="text-gold-gradient">{T.hero_subtitle}</span>
               </span>
             </motion.h1>
 
             {/* Gold divider */}
-            <motion.div variants={itemVariants} className="mx-auto mb-8">
-              <div className="luxury-divider w-24 mx-auto" />
+            <motion.div variants={itemVariants} className="mx-auto mb-5 sm:mb-8">
+              <div className="luxury-divider w-16 sm:w-24 mx-auto" />
             </motion.div>
 
             {/* Description */}
             <motion.p
               variants={itemVariants}
-              className="text-lg md:text-xl text-luxury-rose mb-12 max-w-2xl mx-auto leading-relaxed font-light"
+              className="text-sm sm:text-lg md:text-xl text-luxury-rose mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed font-light px-4 sm:px-0"
             >
               {T.hero_desc}
             </motion.p>
@@ -110,24 +110,26 @@ export default function Hero() {
             {/* CTA Buttons */}
             <motion.div
               variants={itemVariants}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4"
+              className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4 sm:px-0"
             >
-              <a href="#products">
+              <a href="#products" className="w-full sm:w-auto">
                 <Button
                   size="lg"
                   variant="gold"
                   icon={ArrowRight}
                   iconPosition="right"
-                  className="min-w-[220px]"
+                  fullWidth
+                  className="sm:min-w-[220px] sm:!w-auto"
                 >
                   {T.shop_now}
                 </Button>
               </a>
-              <Link to="/about">
+              <Link to="/about" className="w-full sm:w-auto">
                 <Button
                   variant="ghost"
                   size="lg"
-                  className="min-w-[220px] text-white border-2 border-accent/30 hover:bg-accent/10 hover:border-accent/50"
+                  fullWidth
+                  className="sm:min-w-[220px] sm:!w-auto text-white border-2 border-accent/30 hover:bg-accent/10 hover:border-accent/50"
                 >
                   {T.learn_more}
                 </Button>
@@ -140,7 +142,7 @@ export default function Hero() {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-24 max-w-5xl mx-auto"
+            className="grid grid-cols-3 md:grid-cols-3 gap-2 sm:gap-6 mt-12 sm:mt-20 lg:mt-24 max-w-5xl mx-auto"
           >
             {CATEGORY_SHOWCASE.map((cat, i) => (
               <motion.div
@@ -151,7 +153,7 @@ export default function Hero() {
               >
                 <Link
                   to={`/?g=${cat.gender}`}
-                  className="block relative group rounded-2xl overflow-hidden aspect-[3/4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  className="block relative group rounded-xl sm:rounded-2xl overflow-hidden aspect-[3/4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                   aria-label={`${cat.label[lang]} — ${T.discover}`}
                 >
                   <img
@@ -164,16 +166,16 @@ export default function Hero() {
                     fetchpriority={i === 0 ? "high" : "auto"}
                     decoding="async"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-luxury-noir/80 via-luxury-plum/30 to-transparent" aria-hidden="true" />
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h3 className="font-serif text-2xl md:text-3xl font-bold text-white mb-2">
+                  <div className="absolute inset-0 bg-gradient-to-t from-luxury-noir/85 via-luxury-plum/40 to-transparent" aria-hidden="true" />
+                  <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-6">
+                    <h3 className="font-serif text-sm sm:text-2xl md:text-3xl font-bold text-white mb-0 sm:mb-2 leading-tight">
                       {cat.label[lang]}
                     </h3>
-                    <span className="inline-flex items-center gap-2 text-accent text-sm font-medium uppercase tracking-wider group-hover:gap-3 transition-all">
+                    <span className="hidden sm:inline-flex items-center gap-2 text-accent text-sm font-medium uppercase tracking-wider group-hover:gap-3 transition-all">
                       {T.discover} <ArrowRight className="w-4 h-4" aria-hidden="true" />
                     </span>
                   </div>
-                  <div className="absolute inset-0 border-2 border-transparent group-hover:border-accent/30 rounded-2xl transition-colors duration-300" aria-hidden="true" />
+                  <div className="absolute inset-0 border-2 border-transparent group-hover:border-accent/30 rounded-xl sm:rounded-2xl transition-colors duration-300" aria-hidden="true" />
                 </Link>
               </motion.div>
             ))}
@@ -184,18 +186,18 @@ export default function Hero() {
             variants={itemVariants}
             initial="hidden"
             animate="visible"
-            className="flex items-center justify-center gap-12 md:gap-20 mt-20"
+            className="flex items-center justify-center gap-6 sm:gap-12 md:gap-20 mt-12 sm:mt-20"
           >
             {[
               { value: "10K+", label: lang === "fr" ? "Clients" : "Clients" },
               { value: "500+", label: lang === "fr" ? "Pièces" : "Pieces" },
               { value: "4.9", label: lang === "fr" ? "Note" : "Rating" },
-            ].map((stat, i) => (
-              <div key={i} className="text-center">
-                <div className="text-3xl md:text-4xl font-serif font-bold text-white mb-1">
+            ].map((stat) => (
+              <div key={stat.label} className="text-center">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-white mb-0.5 sm:mb-1">
                   {stat.value}
                 </div>
-                <div className="text-xs uppercase tracking-[0.2em] text-accent font-medium">
+                <div className="text-[9px] sm:text-xs uppercase tracking-[0.15em] sm:tracking-[0.2em] text-accent font-medium">
                   {stat.label}
                 </div>
               </div>
@@ -220,22 +222,22 @@ export default function Hero() {
 
         {/* Features Bar */}
         <div className="border-b border-white/5 bg-luxury-noir/20">
-          <div className="container-luxe py-10">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="container-luxe py-6 sm:py-10">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8">
               {features.map((feature, index) => (
                 <motion.div
-                  key={index}
+                  key={feature.title}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.2 + index * 0.15 }}
-                  className="flex items-center gap-4 text-white group"
+                  className="flex items-center gap-3 sm:gap-4 text-white group"
                 >
-                  <div className="w-12 h-12 rounded-xl glass-luxury flex items-center justify-center flex-shrink-0 group-hover:border-accent/30 transition-colors">
-                    <feature.icon className="w-5 h-5 text-accent" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl glass-luxury flex items-center justify-center flex-shrink-0 group-hover:border-accent/30 transition-colors">
+                    <feature.icon className="w-4 h-4 sm:w-5 sm:h-5 text-accent" aria-hidden="true" />
                   </div>
-                  <div>
-                    <div className="font-medium text-sm">{feature.title}</div>
-                    <div className="text-xs text-luxury-rose/50">{feature.desc}</div>
+                  <div className="min-w-0">
+                    <div className="font-medium text-xs sm:text-sm">{feature.title}</div>
+                    <div className="text-[10px] sm:text-xs text-luxury-rose/60 truncate">{feature.desc}</div>
                   </div>
                 </motion.div>
               ))}
