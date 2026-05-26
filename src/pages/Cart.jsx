@@ -14,10 +14,9 @@ import {
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { STR, formatPrice } from "../data/translations";
+import { getProductFallback } from "../utils/imageFallback";
 import Button from "../components/ui/Button";
 import usePageMeta from "../hooks/usePageMeta";
-
-const FALLBACK_IMAGE = "https://picsum.photos/seed/cart/400/600";
 
 // Demo promo codes — for showcase only. A real store reads them from the backend.
 const PROMO_CODES = {
@@ -155,7 +154,10 @@ export default function Cart() {
                         height={144}
                         loading="lazy"
                         className="w-full h-full object-cover hover:scale-105 motion-safe:transition-transform"
-                        onError={(e) => { e.currentTarget.src = FALLBACK_IMAGE; }}
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = getProductFallback({ seed: item.id, label: item.name[lang], category: item.category[lang], w: 200, h: 280 });
+                        }}
                       />
                     </div>
                   </Link>

@@ -1,12 +1,11 @@
-import { memo, useState, useCallback } from "react";
+import { memo, useState, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Heart, ShoppingBag, Star } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { STR, formatPrice } from "../data/translations";
+import { getProductFallback } from "../utils/imageFallback";
 import Badge from "./ui/Badge";
-
-const FALLBACK_IMAGE = "https://picsum.photos/seed/luxemode/600/800";
 
 const COLOR_MAP = {
   noir: "#111", black: "#111",
@@ -75,7 +74,11 @@ function ProductCard({ product, index = 0 }) {
   }, [toggleWishlist, product]);
 
   const cappedDelay = Math.min(index, 6) * 0.04;
-  const thumbSrc = imageError ? FALLBACK_IMAGE : getThumbUrl(product.image);
+  const fallback = useMemo(
+    () => getProductFallback({ seed: product.id, label: product.name[lang], category: product.category[lang], w: 600, h: 800 }),
+    [product.id, product.name, product.category, lang]
+  );
+  const thumbSrc = imageError ? fallback : getThumbUrl(product.image);
 
   return (
     <motion.article

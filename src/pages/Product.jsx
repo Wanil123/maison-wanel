@@ -17,12 +17,11 @@ import {
 import { useApp } from "../context/AppContext";
 import { STR, formatPrice } from "../data/translations";
 import { PRODUCTS } from "../data/products";
+import { getProductFallback } from "../utils/imageFallback";
 import Button from "../components/ui/Button";
 import Badge from "../components/ui/Badge";
 import ProductCard from "../components/ProductCard";
 import usePageMeta from "../hooks/usePageMeta";
-
-const FALLBACK_IMAGE = "https://picsum.photos/seed/product/800/1200";
 
 const COLOR_MAP = {
   noir: "#111", blanc: "#fff", marron: "#8B4513", cognac: "#C68E17",
@@ -190,7 +189,9 @@ export default function Product() {
               )}
 
               <img
-                src={imageError ? FALLBACK_IMAGE : product.image}
+                src={imageError
+                  ? getProductFallback({ seed: product.id, label: product.name[lang], category: product.category[lang], w: 800, h: 1067 })
+                  : product.image}
                 alt={`${product.name[lang]} — ${product.category[lang]}`}
                 width={800}
                 height={1067}

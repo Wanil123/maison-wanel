@@ -220,24 +220,24 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Features Bar */}
-        <div className="border-b border-white/5 bg-luxury-noir/20">
-          <div className="container-luxe py-6 sm:py-10">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8">
+        {/* Features Bar — icones sur fond dore plein pour la visibilite */}
+        <div className="border-b border-white/5 bg-luxury-noir/40">
+          <div className="container-luxe py-5 sm:py-10">
+            <div className="grid grid-cols-3 gap-2 sm:gap-8">
               {features.map((feature, index) => (
                 <motion.div
                   key={feature.title}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.2 + index * 0.15 }}
-                  className="flex items-center gap-3 sm:gap-4 text-white group"
+                  className="flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-2 sm:gap-4 text-white group"
                 >
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl glass-luxury flex items-center justify-center flex-shrink-0 group-hover:border-accent/30 transition-colors">
-                    <feature.icon className="w-4 h-4 sm:w-5 sm:h-5 text-accent" aria-hidden="true" />
+                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-accent to-accent-dark flex items-center justify-center flex-shrink-0 shadow-lg shadow-accent/20 ring-1 ring-accent/30 group-hover:scale-105 transition-transform">
+                    <feature.icon className="w-5 h-5 sm:w-5 sm:h-5 text-luxury-noir" strokeWidth={2.5} aria-hidden="true" />
                   </div>
                   <div className="min-w-0">
-                    <div className="font-medium text-xs sm:text-sm">{feature.title}</div>
-                    <div className="text-[10px] sm:text-xs text-luxury-rose/60 truncate">{feature.desc}</div>
+                    <div className="font-semibold text-[11px] sm:text-sm leading-tight">{feature.title}</div>
+                    <div className="hidden sm:block text-xs text-accent-light/60 truncate mt-0.5">{feature.desc}</div>
                   </div>
                 </motion.div>
               ))}

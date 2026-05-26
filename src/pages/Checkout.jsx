@@ -13,11 +13,10 @@ import {
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { STR, formatPrice } from "../data/translations";
+import { getProductFallback } from "../utils/imageFallback";
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import usePageMeta from "../hooks/usePageMeta";
-
-const FALLBACK_IMAGE = "https://picsum.photos/seed/checkout/200/300";
 
 // Luhn validation for card numbers
 const luhnCheck = (str) => {
@@ -566,7 +565,10 @@ export default function Checkout() {
                         height={80}
                         loading="lazy"
                         className="w-full h-full object-cover"
-                        onError={(e) => { e.currentTarget.src = FALLBACK_IMAGE; }}
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = getProductFallback({ seed: item.id, label: item.name[lang], category: item.category[lang], w: 128, h: 160 });
+                        }}
                       />
                     </div>
                     <div className="flex-1 min-w-0">
