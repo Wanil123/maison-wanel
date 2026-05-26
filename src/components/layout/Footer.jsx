@@ -58,18 +58,18 @@ export default function Footer() {
     {
       title: lang === "fr" ? "Aide & Service" : "Help & Service",
       links: [
-        { label: T.contact_us, to: "mailto:contact@luxemode.com", external: true },
-        { label: T.footer_links_faq, to: "/about#faq" },
-        { label: T.footer_links_delivery, to: "/about#delivery" },
-        { label: T.footer_links_returns, to: "/about#returns" },
+        { label: T.contact_us, to: "/contact" },
+        { label: T.footer_links_faq, to: "/faq" },
+        { label: T.footer_links_delivery, to: "/legal/shipping" },
+        { label: T.footer_links_returns, to: "/legal/returns" },
       ],
     },
     {
       title: lang === "fr" ? "Entreprise" : "Company",
       links: [
         { label: T.nav_about, to: "/about" },
-        { label: T.footer_links_terms, to: "/about#terms" },
-        { label: T.footer_links_privacy, to: "/about#privacy" },
+        { label: T.footer_links_terms, to: "/legal/terms" },
+        { label: T.footer_links_privacy, to: "/legal/privacy" },
       ],
     },
   ];

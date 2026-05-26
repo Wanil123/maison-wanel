@@ -21,6 +21,8 @@ import { getProductFallback } from "../utils/imageFallback";
 import Button from "../components/ui/Button";
 import Badge from "../components/ui/Badge";
 import ProductCard from "../components/ProductCard";
+import StickyAddToCart from "../components/StickyAddToCart";
+import RecentlyViewed from "../components/RecentlyViewed";
 import usePageMeta from "../hooks/usePageMeta";
 
 const COLOR_MAP = {
@@ -280,6 +282,14 @@ export default function Product() {
               </span>
             </div>
 
+            {/* Stock urgency — deterministic per product, demo only */}
+            {product.inStock && (product.id % 5 === 0 || product.id % 7 === 0) && (
+              <div className="mb-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 text-amber-700 dark:text-amber-300 text-xs font-medium">
+                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" aria-hidden="true" />
+                {lang === "fr" ? "Plus que quelques pièces en stock" : "Only a few pieces left in stock"}
+              </div>
+            )}
+
             <div className="flex items-center gap-4 mb-6">
               <span className="text-3xl font-bold text-gray-900 dark:text-white">
                 {formatPrice(product.price, lang)}
@@ -458,7 +468,21 @@ export default function Product() {
             </div>
           </section>
         )}
+
+        {/* Recently viewed (skips current product) */}
+        <RecentlyViewed excludeId={product.id} />
       </div>
+
+      {/* Sticky add-to-cart bar on mobile */}
+      <StickyAddToCart
+        product={product}
+        selectedSize={selectedSize}
+        selectedColor={selectedColor}
+        quantity={quantity}
+      />
+
+      {/* Extra padding for sticky bar on mobile to avoid hiding footer content */}
+      <div className="h-20 lg:hidden" aria-hidden="true" />
     </div>
   );
 }

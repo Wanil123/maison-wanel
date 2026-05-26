@@ -7,7 +7,9 @@ import { STR } from "../data/translations";
 import { PRODUCTS, CATEGORIES, GENDERS } from "../data/products";
 import Hero from "../components/Hero";
 import ProductCard from "../components/ProductCard";
+import RecentlyViewed from "../components/RecentlyViewed";
 import Button from "../components/ui/Button";
+import { ProductGridSkeleton } from "../components/ui/Skeleton";
 import usePageMeta from "../hooks/usePageMeta";
 
 export default function Shop() {
@@ -21,6 +23,7 @@ export default function Shop() {
     sort: "featured",
     query: searchParams.get("q") || "",
   });
+  const [isFiltering, setIsFiltering] = useState(false);
 
   usePageMeta({
     title: lang === "fr" ? "Boutique — Collection Printemps 2026" : "Shop — Spring 2026 Collection",
@@ -40,6 +43,13 @@ export default function Shop() {
       query: q,
     }));
   }, [searchParams]);
+
+  // Tiny skeleton flash while filters change — feels responsive without being distracting.
+  useEffect(() => {
+    setIsFiltering(true);
+    const t = setTimeout(() => setIsFiltering(false), 180);
+    return () => clearTimeout(t);
+  }, [filters.gender, filters.category, filters.sort, filters.query]);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [gridCols, setGridCols] = useState(4);
 
@@ -295,7 +305,9 @@ export default function Shop() {
           </div>
 
           {/* Products Grid — 3 col mobile, plus large au-dela */}
-          {filteredProducts.length > 0 ? (
+          {isFiltering ? (
+            <ProductGridSkeleton count={gridCols === 4 ? 8 : 6} />
+          ) : filteredProducts.length > 0 ? (
             <div
               className={`
                 grid gap-2 sm:gap-6 lg:gap-8
@@ -326,6 +338,11 @@ export default function Shop() {
               </p>
               <Button onClick={clearFilters}>{T.clear_filters}</Button>
             </motion.div>
+          )}
+
+          {/* Recently viewed — only when no filters active to avoid noise */}
+          {filters.gender === "all" && filters.category === "all" && !filters.query && (
+            <RecentlyViewed />
           )}
         </div>
       </section>

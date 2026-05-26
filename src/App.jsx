@@ -4,6 +4,8 @@ import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import Toast from "./components/ui/Toast";
 import ErrorBoundary from "./components/ui/ErrorBoundary";
+import AnnouncementBar from "./components/AnnouncementBar";
+import CookieBanner from "./components/CookieBanner";
 import { AnimatePresence, motion } from "framer-motion";
 import { lazy, Suspense, useEffect } from "react";
 import { STR } from "./data/translations";
@@ -15,6 +17,12 @@ const Checkout = lazy(() => import("./pages/Checkout"));
 const Wishlist = lazy(() => import("./pages/Wishlist"));
 const About = lazy(() => import("./pages/About"));
 const Thanks = lazy(() => import("./pages/Thanks"));
+const FAQ = lazy(() => import("./pages/FAQ"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Terms = lazy(() => import("./pages/legal/Terms"));
+const Privacy = lazy(() => import("./pages/legal/Privacy"));
+const Returns = lazy(() => import("./pages/legal/Returns"));
+const Shipping = lazy(() => import("./pages/legal/Shipping"));
 
 function PageLoader() {
   return (
@@ -65,6 +73,7 @@ function Layout({ children }) {
       >
         Aller au contenu principal
       </a>
+      <AnnouncementBar />
       <Header />
       <main id="main-content" className="flex-1">
         <ErrorBoundary>
@@ -73,6 +82,7 @@ function Layout({ children }) {
       </main>
       <Footer />
       <Toast />
+      <CookieBanner />
     </div>
   );
 }
@@ -116,6 +126,12 @@ export default function App() {
               <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/about" element={<About />} />
               <Route path="/thanks" element={<Thanks />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/legal/terms" element={<Terms />} />
+              <Route path="/legal/privacy" element={<Privacy />} />
+              <Route path="/legal/returns" element={<Returns />} />
+              <Route path="/legal/shipping" element={<Shipping />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
