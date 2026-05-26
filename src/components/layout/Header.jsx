@@ -141,11 +141,12 @@ export default function Header() {
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
         className={`
           fixed top-0 left-0 right-0 z-50
-          transition-all duration-500 ease-out
+          bg-luxury-noir/90 backdrop-blur-xl
+          transition-all duration-300 ease-out
           ${
             isScrolled
-              ? "py-2 bg-white/85 dark:bg-luxury-noir/85 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-accent/10"
-              : "py-4 bg-transparent"
+              ? "py-2 bg-luxury-noir/95 shadow-xl shadow-luxury-noir/40 border-b border-accent/15"
+              : "py-4 border-b border-white/5"
           }
         `}
       >
@@ -155,29 +156,15 @@ export default function Header() {
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
-                className={`
-                  w-11 h-11 rounded-xl flex items-center justify-center
-                  font-serif font-bold text-lg shadow-lg border
-                  bg-luxury-charcoal text-accent border-accent/20
-                  dark:bg-accent dark:text-luxury-noir dark:border-accent
-                `}
+                className="w-11 h-11 rounded-xl flex items-center justify-center font-serif font-bold text-lg shadow-lg border bg-gradient-to-br from-accent to-accent-dark text-luxury-noir border-accent/40"
               >
                 LM
               </motion.div>
               <div className="hidden sm:block">
-                <div
-                  className={`
-                    text-xl font-serif font-bold tracking-tight
-                    ${isScrolled ? "text-gray-900 dark:text-white" : "text-white"}
-                  `}
-                >
+                <div className="text-xl font-serif font-bold tracking-tight text-white">
                   {T.brand}
                 </div>
-                <div
-                  className={`
-                    text-[10px] uppercase tracking-[0.25em] -mt-0.5 text-accent
-                  `}
-                >
+                <div className="text-[10px] uppercase tracking-[0.25em] -mt-0.5 text-accent">
                   {T.tagline}
                 </div>
               </div>
@@ -189,19 +176,12 @@ export default function Header() {
                   key={link.to}
                   to={link.to}
                   aria-current={isActiveLink(link.to) ? "page" : undefined}
-                  className={`
-                    relative font-medium transition-colors
-                    ${
-                      isScrolled
-                        ? "text-gray-700 hover:text-luxury-wine dark:text-gray-300 dark:hover:text-accent"
-                        : "text-white/90 hover:text-accent"
-                    }
-                  `}
+                  className="relative font-medium transition-colors text-white/85 hover:text-accent"
                 >
                   {link.label}
                   {link.to === "/wishlist" && wishlist.length > 0 && (
                     <span
-                      className="absolute -top-2 -right-4 w-5 h-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center"
+                      className="absolute -top-2 -right-4 min-w-[18px] h-[18px] px-1 rounded-full bg-accent text-luxury-noir text-[10px] font-bold flex items-center justify-center"
                       aria-label={`${wishlist.length} ${lang === "fr" ? "favoris" : "favorites"}`}
                     >
                       {wishlist.length}
@@ -210,27 +190,20 @@ export default function Header() {
                   {isActiveLink(link.to) && (
                     <motion.div
                       layoutId="nav-underline"
-                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-accent to-accent-light rounded-full"
+                      className="absolute -bottom-1.5 left-0 right-0 h-0.5 bg-gradient-to-r from-accent to-accent-light rounded-full"
                     />
                   )}
                 </Link>
               ))}
             </nav>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 type="button"
                 onClick={() => setSearchOpen(true)}
-                className={`
-                  p-2.5 rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent
-                  ${
-                    isScrolled
-                      ? "hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300"
-                      : "hover:bg-white/10 text-white"
-                  }
-                `}
+                className="p-2.5 rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent hover:bg-white/10 text-white/85 hover:text-accent"
                 aria-label={lang === "fr" ? "Rechercher" : "Search"}
                 aria-haspopup="dialog"
                 aria-expanded={searchOpen}
@@ -246,21 +219,12 @@ export default function Header() {
                   id="lang-select-desktop"
                   value={lang}
                   onChange={(e) => setLang(e.target.value)}
-                  className={`
-                    appearance-none cursor-pointer
-                    px-3 py-2 pr-8 rounded-xl font-medium text-sm
-                    transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60
-                    ${
-                      isScrolled
-                        ? "bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-200"
-                        : "bg-white/15 text-white backdrop-blur-sm"
-                    }
-                  `}
+                  className="appearance-none cursor-pointer px-3 py-2 pr-8 rounded-xl font-medium text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 bg-white/10 text-white hover:bg-white/15 border border-white/10"
                 >
-                  <option value="fr">FR</option>
-                  <option value="en">EN</option>
+                  <option value="fr" className="text-luxury-noir">FR</option>
+                  <option value="en" className="text-luxury-noir">EN</option>
                 </select>
-                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none opacity-60" aria-hidden="true" />
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none opacity-70 text-white" aria-hidden="true" />
               </div>
 
               <motion.button
@@ -268,14 +232,7 @@ export default function Header() {
                 whileTap={{ scale: 0.95 }}
                 type="button"
                 onClick={toggleDark}
-                className={`
-                  p-2.5 rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent
-                  ${
-                    isScrolled
-                      ? "hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-yellow-300"
-                      : "hover:bg-white/10 text-white"
-                  }
-                `}
+                className="p-2.5 rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent hover:bg-white/10 text-white/85 hover:text-accent"
                 aria-label={dark ? T.light_mode : T.dark_mode}
                 aria-pressed={dark}
               >
@@ -295,15 +252,7 @@ export default function Header() {
               <Link
                 to="/cart"
                 aria-label={`${T.cart} (${cartCount})`}
-                className={`
-                  relative p-2.5 rounded-xl transition-colors
-                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent
-                  ${
-                    isScrolled
-                      ? "hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200"
-                      : "hover:bg-white/10 text-white"
-                  }
-                `}
+                className="relative p-2.5 rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent hover:bg-white/10 text-white/85 hover:text-accent"
               >
                 <ShoppingBag className="w-5 h-5" aria-hidden="true" />
                 {cartCount > 0 && (
@@ -322,14 +271,7 @@ export default function Header() {
                 whileTap={{ scale: 0.95 }}
                 type="button"
                 onClick={() => setMobileMenuOpen(true)}
-                className={`
-                  lg:hidden p-2.5 rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent
-                  ${
-                    isScrolled
-                      ? "hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200"
-                      : "hover:bg-white/10 text-white"
-                  }
-                `}
+                className="lg:hidden p-2.5 rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent hover:bg-white/10 text-white/85 hover:text-accent"
                 aria-label={T.menu}
                 aria-haspopup="dialog"
                 aria-expanded={mobileMenuOpen}
