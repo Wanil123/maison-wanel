@@ -100,15 +100,12 @@ function ProductCard({ product, index = 0 }) {
               alt={product.name[lang]}
               width={600}
               height={800}
-              className={`
-                w-full h-full object-cover img-zoom motion-safe:transition-opacity duration-500
-                ${imageLoaded ? "opacity-100" : "opacity-0"}
-              `}
+              className="relative z-10 w-full h-full object-cover img-zoom"
               loading={index < 6 ? "eager" : "lazy"}
               fetchpriority={index === 0 ? "high" : "auto"}
               decoding="async"
               onLoad={() => setImageLoaded(true)}
-              onError={() => setImageError(true)}
+              onError={() => { setImageError(true); setImageLoaded(true); }}
             />
 
             {/* Hover overlay (CSS only) */}

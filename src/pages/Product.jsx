@@ -184,7 +184,7 @@ export default function Product() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="relative aspect-[3/4] rounded-3xl overflow-hidden bg-gray-100 dark:bg-luxury-charcoal/40 lg:sticky lg:top-24 shadow-xl">
+            <div className="relative aspect-[3/4] rounded-2xl sm:rounded-3xl overflow-hidden bg-gray-100 dark:bg-luxury-charcoal/40 lg:sticky lg:top-24 shadow-xl">
               {!imageLoaded && !imageError && (
                 <div className="absolute inset-0 skeleton" aria-hidden="true" />
               )}
@@ -194,14 +194,12 @@ export default function Product() {
                 alt={`${product.name[lang]} — ${product.category[lang]}`}
                 width={800}
                 height={1067}
-                className={`w-full h-full object-cover motion-safe:transition-opacity duration-500 ${
-                  imageLoaded ? "opacity-100" : "opacity-0"
-                }`}
+                className="relative z-10 w-full h-full object-cover"
                 loading="eager"
                 fetchpriority="high"
                 decoding="async"
                 onLoad={() => setImageLoaded(true)}
-                onError={() => setImageError(true)}
+                onError={() => { setImageError(true); setImageLoaded(true); }}
               />
 
               <div className="absolute top-4 left-4 flex flex-col gap-2">

@@ -205,8 +205,8 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* Marquee Banner */}
-        <div className="border-t border-b border-accent/10 py-4 overflow-hidden bg-luxury-noir/30" aria-hidden="true">
+        {/* Marquee Banner — desktop only (illisible sur mobile etroit) */}
+        <div className="hidden sm:block border-t border-b border-accent/10 py-4 overflow-hidden bg-luxury-noir/30" aria-hidden="true">
           <div className="marquee-track">
             {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
               <span
