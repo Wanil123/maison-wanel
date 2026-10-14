@@ -1,11 +1,10 @@
-import { BrowserRouter, Routes, Route, useLocation, Link } from "react-router-dom";
+import { BrowserRouter, HashRouter, Routes, Route, useLocation, Link, Navigate } from "react-router-dom";
 import { AppProvider, useApp } from "./context/AppContext";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import Toast from "./components/ui/Toast";
 import ErrorBoundary from "./components/ui/ErrorBoundary";
 import AnnouncementBar from "./components/AnnouncementBar";
-import CookieBanner from "./components/CookieBanner";
 import { AnimatePresence, motion } from "framer-motion";
 import { lazy, Suspense, useEffect } from "react";
 import { STR } from "./data/translations";
@@ -19,10 +18,6 @@ const About = lazy(() => import("./pages/About"));
 const Thanks = lazy(() => import("./pages/Thanks"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const Contact = lazy(() => import("./pages/Contact"));
-const Terms = lazy(() => import("./pages/legal/Terms"));
-const Privacy = lazy(() => import("./pages/legal/Privacy"));
-const Returns = lazy(() => import("./pages/legal/Returns"));
-const Shipping = lazy(() => import("./pages/legal/Shipping"));
 
 function PageLoader() {
   return (
@@ -82,7 +77,6 @@ function Layout({ children }) {
       </main>
       <Footer />
       <Toast />
-      <CookieBanner />
     </div>
   );
 }
@@ -112,8 +106,9 @@ function NotFound() {
 }
 
 export default function App() {
+  const Router = import.meta.env.BASE_URL === "/" ? BrowserRouter : HashRouter;
   return (
-    <BrowserRouter>
+    <Router>
       <AppProvider>
         <ScrollToTop />
         <Layout>
@@ -128,15 +123,12 @@ export default function App() {
               <Route path="/thanks" element={<Thanks />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/contact" element={<Contact />} />
-              <Route path="/legal/terms" element={<Terms />} />
-              <Route path="/legal/privacy" element={<Privacy />} />
-              <Route path="/legal/returns" element={<Returns />} />
-              <Route path="/legal/shipping" element={<Shipping />} />
+              <Route path="/legal/*" element={<Navigate to="/about" replace />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
         </Layout>
       </AppProvider>
-    </BrowserRouter>
+    </Router>
   );
 }

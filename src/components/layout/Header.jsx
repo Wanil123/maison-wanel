@@ -140,7 +140,7 @@ export default function Header() {
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
         className={`
-          fixed top-0 left-0 right-0 z-50
+          sticky top-0 z-50
           bg-luxury-noir/90 backdrop-blur-xl
           transition-all duration-300 ease-out
           ${
@@ -152,13 +152,13 @@ export default function Header() {
       >
         <div className="container-luxe">
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-3 group" aria-label="LuxeMode — Accueil">
+            <Link to="/" className="flex items-center gap-3 group" aria-label="Maison Wanél — Accueil">
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
                 className="w-11 h-11 rounded-xl flex items-center justify-center font-serif font-bold text-lg shadow-lg border bg-gradient-to-br from-accent to-accent-dark text-luxury-noir border-accent/40"
               >
-                LM
+                W
               </motion.div>
               <div className="hidden sm:block">
                 <div className="text-xl font-serif font-bold tracking-tight text-white">
@@ -519,8 +519,6 @@ export default function Header() {
         )}
       </AnimatePresence>
 
-      {/* Spacer for fixed header */}
-      <div className="h-20" aria-hidden="true" />
     </>
   );
 }

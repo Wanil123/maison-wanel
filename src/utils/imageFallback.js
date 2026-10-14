@@ -38,7 +38,7 @@ const utf8ToB64 = (str) => {
  * @param {number}        [opts.h]    height
  * @returns {string} data URI
  */
-export function getProductFallback({ seed = 0, label = "LuxeMode", category = "", w = 600, h = 800 }) {
+export function getProductFallback({ seed = 0, label = "Maison Wanél", category = "", w = 600, h = 800 }) {
   const palette = PALETTES[Math.abs(Number.parseInt(seed, 10) || 0) % PALETTES.length];
   const letter = initial(label);
   const cat = safe(category).toUpperCase();
@@ -72,7 +72,7 @@ export function getProductFallback({ seed = 0, label = "LuxeMode", category = ""
     : ""}
   <text x="50%" y="92%" text-anchor="middle" dominant-baseline="middle"
         font-family="Georgia, serif" font-weight="700"
-        font-size="${w * 0.04}" fill="${palette.accent}" opacity="0.6">LuxeMode</text>
+        font-size="${w * 0.04}" fill="${palette.accent}" opacity="0.6">Maison Wanél</text>
 </svg>`;
 
   return `data:image/svg+xml;base64,${utf8ToB64(svg)}`;

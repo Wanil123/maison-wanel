@@ -1,9 +1,9 @@
 {
-  "name": "LuxeMode — Mode Premium",
-  "short_name": "LuxeMode",
-  "description": "Boutique de mode et accessoires de luxe.",
-  "start_url": "/",
-  "scope": "/",
+  "name": "Maison Wanél — Mode Premium",
+  "short_name": "Maison Wanél",
+  "description": "Concept de boutique e-commerce fictive par Wanil Parfait.",
+  "start_url": ".",
+  "scope": ".",
   "display": "standalone",
   "background_color": "#FAF4EB",
   "theme_color": "#1E0F21",
@@ -11,7 +11,7 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/favicon.svg",
+      "src": "favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"

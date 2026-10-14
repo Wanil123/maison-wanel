@@ -1,7 +1,2 @@
 User-agent: *
 Allow: /
-Disallow: /cart
-Disallow: /checkout
-Disallow: /thanks
-
-Sitemap: https://luxemode.app/sitemap.xml

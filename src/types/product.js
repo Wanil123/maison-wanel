@@ -12,10 +12,6 @@
  */
 
 /**
- * @typedef {"bestseller" | "new" | "limited" | "sale" | "exclusive" | null} BadgeVariant
- */
-
-/**
  * @typedef {Object} Product
  * @property {number} id
  * @property {Translatable} name
@@ -23,10 +19,7 @@
  * @property {Gender} gender
  * @property {number} price
  * @property {number | null} originalPrice
- * @property {number} rating
- * @property {number} reviews
  * @property {boolean} inStock
- * @property {BadgeVariant} badge
  * @property {string[]} colors
  * @property {string[]} sizes
  * @property {string} image
@@ -46,42 +39,11 @@
  */
 
 /**
- * @typedef {Object} ShippingAddress
- * @property {string} email
- * @property {string} firstName
- * @property {string} lastName
- * @property {string} address
- * @property {string} city
- * @property {string} province
- * @property {string} postal
- * @property {string} phone
- */
-
-/**
- * @typedef {Object} Order
- * @property {string} orderNumber       // "LM-XXXXXXXX"
- * @property {string} email
- * @property {string} name
- * @property {number} total
- * @property {number} itemsCount
- * @property {string} createdAt         // ISO 8601
- * @property {"fr" | "en"} lang
- */
-
-/**
  * @typedef {"success" | "error" | "warning" | "info"} ToastType
  * @typedef {Object} Toast
  * @property {number} id
  * @property {string} message
  * @property {ToastType} type
- */
-
-/**
- * @typedef {Object} ConsentState
- * @property {boolean} essential
- * @property {boolean} analytics
- * @property {boolean} marketing
- * @property {number} [ts]
  */
 
 export {};

@@ -17,9 +17,9 @@
     <circle cx="1080" cy="540" r="280" fill="#D4A0A0"/>
   </g>
   <g transform="translate(600, 280)" text-anchor="middle">
-    <text font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="120" fill="url(#gold)">LuxeMode</text>
-    <text y="80" font-family="Georgia, serif" font-weight="400" font-size="36" fill="#F5E6CC" letter-spacing="6">L'ÉLÉGANCE REDÉFINIE</text>
+    <text font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="120" fill="url(#gold)">Maison Wanél</text>
+    <text y="80" font-family="Georgia, serif" font-weight="400" font-size="36" fill="#F5E6CC" letter-spacing="6">LE VESTIAIRE IMAGINÉ</text>
     <line x1="-80" y1="120" x2="80" y2="120" stroke="#C9A96E" stroke-width="2"/>
-    <text y="180" font-family="Inter, system-ui, sans-serif" font-weight="500" font-size="28" fill="#FAF4EB">Collection Printemps 2026</text>
+    <text y="180" font-family="Inter, system-ui, sans-serif" font-weight="500" font-size="28" fill="#FAF4EB">Un concept e-commerce par Wanil Parfait</text>
   </g>
 </svg>

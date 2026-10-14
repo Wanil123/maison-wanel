@@ -9,7 +9,6 @@ import Hero from "../components/Hero";
 import ProductCard from "../components/ProductCard";
 import RecentlyViewed from "../components/RecentlyViewed";
 import Button from "../components/ui/Button";
-import { ProductGridSkeleton } from "../components/ui/Skeleton";
 import usePageMeta from "../hooks/usePageMeta";
 
 export default function Shop() {
@@ -23,14 +22,13 @@ export default function Shop() {
     sort: "featured",
     query: searchParams.get("q") || "",
   });
-  const [isFiltering, setIsFiltering] = useState(false);
 
   usePageMeta({
     title: lang === "fr" ? "Boutique — Collection Printemps 2026" : "Shop — Spring 2026 Collection",
     description:
       lang === "fr"
-        ? "Découvrez la collection LuxeMode : mode et accessoires premium pour femme, homme et enfant. Livraison gratuite dès 100 $, retours 30 jours."
-        : "Explore the LuxeMode collection: premium fashion and accessories for women, men, and children. Free shipping over $100, 30-day returns.",
+        ? "Explorez le concept de boutique Maison Wanél, un projet React de portfolio avec catalogue, favoris et panier de démonstration."
+        : "Explore Maison Wanél, a React portfolio storefront with a catalogue, favourites and demo cart.",
   });
 
   // Sync gender from URL query param without clobbering category if URL didn't request it.
@@ -44,12 +42,6 @@ export default function Shop() {
     }));
   }, [searchParams]);
 
-  // Tiny skeleton flash while filters change — feels responsive without being distracting.
-  useEffect(() => {
-    setIsFiltering(true);
-    const t = setTimeout(() => setIsFiltering(false), 180);
-    return () => clearTimeout(t);
-  }, [filters.gender, filters.category, filters.sort, filters.query]);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [gridCols, setGridCols] = useState(4);
 
@@ -96,9 +88,6 @@ export default function Shop() {
       case "price-desc":
         result.sort((a, b) => b.price - a.price);
         break;
-      case "rating":
-        result.sort((a, b) => b.rating - a.rating);
-        break;
       case "newest":
         result.sort((a, b) => b.id - a.id);
         break;
@@ -132,7 +121,7 @@ export default function Shop() {
             >
               <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.25em] text-accent mb-4">
                 <Diamond className="w-3.5 h-3.5" />
-                {lang === "fr" ? "Collection exclusive" : "Exclusive collection"}
+                {lang === "fr" ? "Collection conceptuelle" : "Concept collection"}
                 <Diamond className="w-3.5 h-3.5" />
               </span>
               <h2 id="shop-heading" className="text-4xl md:text-6xl font-serif font-bold text-gray-900 dark:text-white mb-5">
@@ -213,14 +202,16 @@ export default function Shop() {
                 <option value="featured">{T.sort_featured}</option>
                 <option value="price-asc">{T.sort_price_asc}</option>
                 <option value="price-desc">{T.sort_price_desc}</option>
-                <option value="rating">{T.sort_rating}</option>
                 <option value="newest">{T.sort_newest}</option>
               </select>
 
               {/* Grid Toggle - Desktop */}
               <div className="hidden xl:flex items-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-xl p-1">
                 <button
+                  type="button"
                   onClick={() => setGridCols(3)}
+                  aria-label={lang === "fr" ? "Afficher trois colonnes" : "Show three columns"}
+                  aria-pressed={gridCols === 3}
                   className={`p-2 rounded-lg transition-colors ${
                     gridCols === 3
                       ? "bg-white dark:bg-gray-700 shadow-sm"
@@ -230,7 +221,10 @@ export default function Shop() {
                   <Grid3X3 className="w-4 h-4" />
                 </button>
                 <button
+                  type="button"
                   onClick={() => setGridCols(4)}
+                  aria-label={lang === "fr" ? "Afficher quatre colonnes" : "Show four columns"}
+                  aria-pressed={gridCols === 4}
                   className={`p-2 rounded-lg transition-colors ${
                     gridCols === 4
                       ? "bg-white dark:bg-gray-700 shadow-sm"
@@ -305,13 +299,11 @@ export default function Shop() {
           </div>
 
           {/* Products Grid — 3 col mobile, plus large au-dela */}
-          {isFiltering ? (
-            <ProductGridSkeleton count={gridCols === 4 ? 8 : 6} />
-          ) : filteredProducts.length > 0 ? (
+          {filteredProducts.length > 0 ? (
             <div
               className={`
                 grid gap-2 sm:gap-6 lg:gap-8
-                grid-cols-3 sm:grid-cols-3 lg:grid-cols-3
+                grid-cols-2 sm:grid-cols-2 lg:grid-cols-3
                 ${gridCols === 4 ? "xl:grid-cols-4" : "xl:grid-cols-3"}
               `}
             >

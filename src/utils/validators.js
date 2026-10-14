@@ -1,5 +1,5 @@
 // Runtime validators using Zod.
-// Catches bad data at module load (dev) and protects localStorage reads (prod).
+// Validate catalogue samples and protect localStorage reads.
 
 import { z } from "zod";
 
@@ -10,10 +10,6 @@ export const TranslatableSchema = z.object({
 
 export const GenderSchema = z.enum(["femme", "homme", "enfant"]);
 
-export const BadgeSchema = z
-  .enum(["bestseller", "new", "limited", "sale", "exclusive"])
-  .nullable();
-
 export const ProductSchema = z.object({
   id: z.number().int().positive(),
   name: TranslatableSchema,
@@ -21,10 +17,7 @@ export const ProductSchema = z.object({
   gender: GenderSchema,
   price: z.number().nonnegative(),
   originalPrice: z.number().positive().nullable(),
-  rating: z.number().min(0).max(5),
-  reviews: z.number().int().nonnegative(),
   inStock: z.boolean(),
-  badge: BadgeSchema,
   colors: z.array(z.string()),
   sizes: z.array(z.string()),
   image: z.string().url(),
@@ -45,34 +38,6 @@ export const CartItemSchema = z.object({
 });
 
 export const CartSchema = z.array(CartItemSchema);
-
-export const ShippingAddressSchema = z.object({
-  email: z.string().email(),
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-  address: z.string().min(1),
-  city: z.string().min(1),
-  province: z.string().min(2).max(2),
-  postal: z.string().regex(/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/, "Invalid Canadian postal code"),
-  phone: z.string().optional().default(""),
-});
-
-export const OrderSchema = z.object({
-  orderNumber: z.string().regex(/^LM-[A-Z0-9]+$/),
-  email: z.string().email(),
-  name: z.string().min(1),
-  total: z.number().nonnegative(),
-  itemsCount: z.number().int().nonnegative(),
-  createdAt: z.string(),
-  lang: z.enum(["fr", "en"]),
-});
-
-export const ConsentSchema = z.object({
-  essential: z.boolean(),
-  analytics: z.boolean(),
-  marketing: z.boolean(),
-  ts: z.number().optional(),
-});
 
 /**
  * Safe parse helper — returns parsed data or fallback on failure.

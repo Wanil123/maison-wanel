@@ -1,7 +1,7 @@
 import { memo, useState, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Heart, ShoppingBag, Star } from "lucide-react";
+import { Heart, ShoppingBag } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { STR, formatPrice } from "../data/translations";
 import { getProductFallback } from "../utils/imageFallback";
@@ -57,9 +57,7 @@ function ProductCard({ product, index = 0 }) {
       ? Math.round(100 - (product.price / product.originalPrice) * 100)
       : 0;
 
-  const handleQuickAdd = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleQuickAdd = useCallback(() => {
     addToCart(product, {
       size: product.sizes?.[0] || "",
       color: product.colors?.[0] || "",
@@ -67,9 +65,7 @@ function ProductCard({ product, index = 0 }) {
     });
   }, [addToCart, product]);
 
-  const handleWishlist = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleWishlist = useCallback(() => {
     toggleWishlist(product);
   }, [toggleWishlist, product]);
 
@@ -87,12 +83,12 @@ function ProductCard({ product, index = 0 }) {
       transition={{ duration: 0.4, delay: cappedDelay, ease: [0.23, 1, 0.32, 1] }}
       className="group relative"
     >
-      <Link
-        to={`/product/${product.id}`}
-        aria-label={`${product.name[lang]} — ${formatPrice(product.price, lang)}`}
-        className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-luxury-ivory dark:focus-visible:ring-offset-gray-900 rounded-xl sm:rounded-2xl"
-      >
-        <div className="relative bg-white dark:bg-luxury-charcoal/40 rounded-xl sm:rounded-2xl overflow-hidden luxury-card border border-gray-100 dark:border-luxury-charcoal">
+      <div className="relative bg-white dark:bg-luxury-charcoal/40 rounded-xl sm:rounded-2xl overflow-hidden luxury-card border border-gray-100 dark:border-luxury-charcoal">
+          <Link
+            to={`/product/${product.id}`}
+            aria-label={`${product.name[lang]} — ${formatPrice(product.price, lang)}`}
+            className="absolute inset-0 z-30 rounded-xl sm:rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent"
+          />
           <div className="relative aspect-[3/4] overflow-hidden bg-gray-50 dark:bg-luxury-noir">
             {!imageLoaded && !imageError && (
               <div className="absolute inset-0 skeleton" aria-hidden="true" />
@@ -116,11 +112,6 @@ function ProductCard({ product, index = 0 }) {
 
             {/* Badges — mobile petits, desktop normaux */}
             <div className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 flex flex-col gap-1 sm:gap-2">
-              {product.badge && (
-                <Badge variant={product.badge} size="sm" animated className="sm:!px-3 sm:!py-1 sm:!text-xs">
-                  {T[product.badge]}
-                </Badge>
-              )}
               {discount > 0 && (
                 <Badge variant="sale" size="sm" className="sm:!px-3 sm:!py-1 sm:!text-xs">
                   -{discount}%
@@ -133,8 +124,8 @@ function ProductCard({ product, index = 0 }) {
               type="button"
               onClick={handleWishlist}
               className={`
-                absolute top-1.5 right-1.5 sm:top-3 sm:right-3
-                w-7 h-7 sm:w-10 sm:h-10 rounded-full
+                absolute z-40 top-1.5 right-1.5 sm:top-3 sm:right-3
+                w-9 h-9 sm:w-10 sm:h-10 rounded-full
                 flex items-center justify-center
                 transition-all duration-300 shadow-lg
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent
@@ -147,14 +138,14 @@ function ProductCard({ product, index = 0 }) {
               aria-label={wishlisted ? T.remove_from_wishlist : T.add_to_wishlist}
               aria-pressed={wishlisted}
             >
-              <Heart
-                className={`w-3 h-3 sm:w-4 sm:h-4 transition-all ${wishlisted ? "fill-current" : ""}`}
+                <Heart
+                className={`w-4 h-4 transition-all ${wishlisted ? "fill-current" : ""}`}
                 aria-hidden="true"
               />
             </button>
 
             {/* Quick add — desktop hover only (les mobiles tapent directement la card) */}
-            <div className="hidden sm:block absolute bottom-4 left-4 right-4 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto">
+            <div className="hidden sm:block absolute z-40 bottom-4 left-4 right-4 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-auto">
               <button
                 type="button"
                 onClick={handleQuickAdd}
@@ -188,26 +179,17 @@ function ProductCard({ product, index = 0 }) {
           {/* Info — compact mobile, normal desktop */}
           <div className="p-2 sm:p-4 lg:p-5">
             <div className="flex items-center justify-between mb-1 sm:mb-2.5">
-              <span className="text-[8px] sm:text-[11px] font-medium uppercase tracking-[0.1em] sm:tracking-[0.15em] text-accent truncate max-w-[70%]">
+              <span className="text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.1em] sm:tracking-[0.15em] text-accent truncate max-w-[70%]">
                 {product.category[lang]}
               </span>
-              <div
-                className="flex items-center gap-0.5 sm:gap-1 text-xs flex-shrink-0"
-                aria-label={`${product.rating}/5 (${product.reviews} ${T.reviews_count})`}
-              >
-                <Star className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 text-accent fill-accent" aria-hidden="true" />
-                <span className="font-medium text-gray-700 dark:text-gray-300 text-[10px] sm:text-xs">
-                  {product.rating}
-                </span>
-              </div>
             </div>
 
-            <h3 className="font-serif font-semibold text-gray-900 dark:text-white line-clamp-2 sm:line-clamp-1 mb-1 sm:mb-2.5 text-xs sm:text-base lg:text-lg leading-tight group-hover:text-accent transition-colors duration-300">
+            <h3 className="font-serif font-semibold text-gray-900 dark:text-white line-clamp-2 mb-1 sm:mb-2.5 text-sm sm:text-base lg:text-lg leading-tight group-hover:text-accent transition-colors duration-300">
               {product.name[lang]}
             </h3>
 
             <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2.5">
-              <span className="text-xs sm:text-base lg:text-lg font-bold text-gray-900 dark:text-white">
+              <span className="text-sm sm:text-base lg:text-lg font-bold text-gray-900 dark:text-white">
                 {formatPrice(product.price, lang)}
               </span>
               {product.originalPrice > product.price && (
@@ -247,8 +229,7 @@ function ProductCard({ product, index = 0 }) {
               </div>
             )}
           </div>
-        </div>
-      </Link>
+      </div>
     </motion.article>
   );
 }

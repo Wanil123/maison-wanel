@@ -1,9 +1,9 @@
 {
-  "name": "luxemode-react",
+  "name": "maison-wanel",
   "private": true,
   "version": "1.1.0",
   "type": "module",
-  "description": "LuxeMode — boutique e-commerce de mode premium (React 19 + Vite 7 + Tailwind 3).",
+  "description": "Maison Wanél — concept de boutique e-commerce fictive pour un portfolio React.",
   "engines": {
     "node": ">=20.19"
   },
