@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { STR } from "../data/translations";
+import { calculateCart, PROMO_CODES, FREE_SHIPPING_THRESHOLD } from "../utils/pricing";
 
 // Persistence helpers — safe against corrupted localStorage payloads.
 const load = (key, defaultValue, validator) => {
@@ -28,9 +29,6 @@ const isCartItem = (it) =>
 const isWishItem = (it) => it && typeof it === "object" && typeof it.id === "number";
 
 const MAX_QTY = 99;
-const TAX_RATE = 0.15;
-const FREE_SHIPPING_THRESHOLD = 100;
-const SHIPPING_COST = 15;
 
 const AppContext = createContext(null);
 
@@ -47,6 +45,10 @@ export function AppProvider({ children }) {
   const [cart, setCart] = useState(() => {
     const arr = load("lm_cart", [], isArray);
     return arr.filter(isCartItem);
+  });
+  const [promoCode, setPromoCode] = useState(() => {
+    const code = load("lm_promo", "");
+    return Object.hasOwn(PROMO_CODES, code) ? code : "";
   });
 
   const [wishlist, setWishlist] = useState(() => {
@@ -65,6 +67,7 @@ export function AppProvider({ children }) {
   useEffect(() => save("lm_lang", lang), [lang]);
   useEffect(() => save("lm_dark", dark), [dark]);
   useEffect(() => save("lm_cart", cart), [cart]);
+  useEffect(() => save("lm_promo", promoCode), [promoCode]);
   useEffect(() => save("lm_wishlist", wishlist), [wishlist]);
   useEffect(() => save("lm_recent", recentlyViewed), [recentlyViewed]);
 
@@ -91,6 +94,12 @@ export function AppProvider({ children }) {
           const parsed = JSON.parse(e.newValue);
           if (isArray(parsed)) setWishlist(parsed.filter(isWishItem));
         } catch { /* ignore */ }
+      }
+      if (e.key === "lm_promo") {
+        try {
+          const code = JSON.parse(e.newValue || '""');
+          setPromoCode(Object.hasOwn(PROMO_CODES, code) ? code : "");
+        } catch { setPromoCode(""); }
       }
     };
     window.addEventListener("storage", onStorage);
@@ -175,7 +184,10 @@ export function AppProvider({ children }) {
     addToast(STR[lang].item_removed, "info");
   }, [lang, addToast]);
 
-  const clearCart = useCallback(() => setCart([]), []);
+  const clearCart = useCallback(() => {
+    setCart([]);
+    setPromoCode("");
+  }, []);
 
   const cartTotal = useMemo(
     () => cart.reduce((sum, item) => sum + item.price * item.qty, 0),
@@ -185,15 +197,11 @@ export function AppProvider({ children }) {
     () => cart.reduce((sum, item) => sum + item.qty, 0),
     [cart]
   );
-  const cartShipping = useMemo(
-    () => (cartTotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST),
-    [cartTotal]
-  );
-  const cartTax = useMemo(() => cartTotal * TAX_RATE, [cartTotal]);
-  const cartGrandTotal = useMemo(
-    () => cartTotal + cartShipping + cartTax,
-    [cartTotal, cartShipping, cartTax]
-  );
+  const pricing = useMemo(() => calculateCart(cart, promoCode), [cart, promoCode]);
+  const cartDiscount = pricing.discount;
+  const cartShipping = pricing.shipping;
+  const cartTax = pricing.tax;
+  const cartGrandTotal = pricing.total;
 
   const toggleWishlist = useCallback((product) => {
     setWishlist((prev) => {
@@ -228,7 +236,8 @@ export function AppProvider({ children }) {
     lang, setLang, t,
     dark, toggleDark,
     cart, addToCart, updateCartQty, removeFromCart, clearCart,
-    cartTotal, cartCount, cartShipping, cartTax, cartGrandTotal,
+    cartTotal, cartCount, cartDiscount, cartShipping, cartTax, cartGrandTotal,
+    promoCode, setPromoCode,
     FREE_SHIPPING_THRESHOLD, MAX_QTY,
     wishlist, toggleWishlist, isWishlisted,
     recentlyViewed, trackView,
@@ -236,7 +245,8 @@ export function AppProvider({ children }) {
   }), [
     lang, t, dark, toggleDark,
     cart, addToCart, updateCartQty, removeFromCart, clearCart,
-    cartTotal, cartCount, cartShipping, cartTax, cartGrandTotal,
+    cartTotal, cartCount, cartDiscount, cartShipping, cartTax, cartGrandTotal,
+    promoCode, setPromoCode,
     wishlist, toggleWishlist, isWishlisted,
     recentlyViewed, trackView,
     toasts, addToast, removeToast,

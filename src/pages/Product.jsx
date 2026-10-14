@@ -5,10 +5,6 @@ import {
   ArrowLeft,
   Heart,
   ShoppingBag,
-  Truck,
-  Shield,
-  RotateCcw,
-  Star,
   Minus,
   Plus,
   Check,
@@ -73,29 +69,7 @@ export default function Product() {
     product
       ? {
           title: `${product.name[lang]} — ${product.category[lang]}`,
-          description: product.description[lang],
-          jsonLd: {
-            "@context": "https://schema.org/",
-            "@type": "Product",
-            name: product.name[lang],
-            description: product.description[lang],
-            image: product.image,
-            brand: { "@type": "Brand", name: "LuxeMode" },
-            category: product.category[lang],
-            offers: {
-              "@type": "Offer",
-              priceCurrency: "CAD",
-              price: product.price,
-              availability: product.inStock
-                ? "https://schema.org/InStock"
-                : "https://schema.org/OutOfStock",
-            },
-            aggregateRating: {
-              "@type": "AggregateRating",
-              ratingValue: product.rating,
-              reviewCount: product.reviews,
-            },
-          },
+          description: lang === "fr" ? `Produit fictif du concept LuxeMode : ${product.name.fr}.` : `Sample product from the LuxeMode concept: ${product.name.en}.`,
         }
       : { title: lang === "fr" ? "Produit introuvable" : "Product not found" }
   );
@@ -206,11 +180,6 @@ export default function Product() {
               />
 
               <div className="absolute top-4 left-4 flex flex-col gap-2">
-                {product.badge && (
-                  <Badge variant={product.badge} size="lg">
-                    {T[product.badge]}
-                  </Badge>
-                )}
                 {discount > 0 && (
                   <Badge variant="sale" size="lg">
                     -{discount}%
@@ -254,41 +223,9 @@ export default function Product() {
               {product.name[lang]}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-4 mb-6" aria-label={`${product.rating}/5 sur ${product.reviews} avis`}>
-              <div className="flex items-center gap-1">
-                {[0, 1, 2, 3, 4].map((i) => (
-                  <Star
-                    key={i}
-                    className={`w-5 h-5 ${
-                      i < Math.floor(product.rating)
-                        ? "text-accent fill-accent"
-                        : "text-gray-300 dark:text-gray-600"
-                    }`}
-                    aria-hidden="true"
-                  />
-                ))}
-              </div>
-              <span className="text-gray-600 dark:text-gray-400">
-                {product.rating} ({product.reviews} {T.reviews_count})
-              </span>
-              <span
-                className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  product.inStock
-                    ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
-                    : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400"
-                }`}
-              >
-                {product.inStock ? T.in_stock : T.out_of_stock}
-              </span>
-            </div>
-
-            {/* Stock urgency — deterministic per product, demo only */}
-            {product.inStock && (product.id % 5 === 0 || product.id % 7 === 0) && (
-              <div className="mb-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 text-amber-700 dark:text-amber-300 text-xs font-medium">
-                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" aria-hidden="true" />
-                {lang === "fr" ? "Plus que quelques pièces en stock" : "Only a few pieces left in stock"}
-              </div>
-            )}
+            <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">
+              {lang === "fr" ? "Produit fictif présenté dans une démo de portfolio." : "Sample product in a portfolio demo."}
+            </p>
 
             <div className="flex items-center gap-4 mb-6">
               <span className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -316,12 +253,9 @@ export default function Product() {
                   <legend className="font-semibold text-gray-900 dark:text-white">
                     {T.size}
                   </legend>
-                  <button
-                    type="button"
-                    className="text-sm text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
-                  >
-                    {T.size_guide}
-                  </button>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    {lang === "fr" ? "Tailles d’exemple" : "Sample sizes"}
+                  </span>
                 </div>
                 <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={T.size}>
                   {product.sizes.map((size) => (
@@ -434,9 +368,9 @@ export default function Product() {
 
             <ul className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-6 bg-gray-50 dark:bg-luxury-charcoal/30 rounded-2xl border border-gray-100 dark:border-luxury-charcoal/60">
               {[
-                { icon: Truck, title: T.free_shipping, desc: T.orders_over },
-                { icon: Shield, title: T.secure_pay, desc: T.secure_badge },
-                { icon: RotateCcw, title: T.free_returns, desc: T.returns_details },
+                { icon: ShoppingBag, title: lang === "fr" ? "Panier local" : "Local cart", desc: lang === "fr" ? "Enregistré dans ce navigateur" : "Saved in this browser" },
+                { icon: Heart, title: lang === "fr" ? "Favoris" : "Favourites", desc: lang === "fr" ? "Retrouvez votre sélection" : "Keep your selection" },
+                { icon: Check, title: lang === "fr" ? "Démo transparente" : "Transparent demo", desc: lang === "fr" ? "Aucun paiement réel" : "No real payment" },
               ].map((feature) => (
                 <li key={feature.title} className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-accent/10 dark:bg-accent/15 flex items-center justify-center flex-shrink-0">

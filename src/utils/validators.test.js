@@ -1,9 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
+import { PRODUCTS } from "../data/products";
 import {
   ProductSchema,
   CartItemSchema,
-  ShippingAddressSchema,
-  ConsentSchema,
   safeParse,
   filterValid,
 } from "./validators";
@@ -15,10 +14,7 @@ const validProduct = {
   gender: "femme",
   price: 100,
   originalPrice: 150,
-  rating: 4.5,
-  reviews: 12,
   inStock: true,
-  badge: "new",
   colors: ["Noir"],
   sizes: ["S", "M"],
   image: "https://example.com/x.jpg",
@@ -26,6 +22,10 @@ const validProduct = {
 };
 
 describe("ProductSchema", () => {
+  it("validates every catalogue sample", () => {
+    expect(PRODUCTS.every((product) => ProductSchema.safeParse(product).success)).toBe(true);
+  });
+
   it("accepts a valid product", () => {
     expect(ProductSchema.safeParse(validProduct).success).toBe(true);
   });
@@ -40,13 +40,8 @@ describe("ProductSchema", () => {
     expect(ProductSchema.safeParse(bad).success).toBe(false);
   });
 
-  it("rejects rating above 5", () => {
-    const bad = { ...validProduct, rating: 6 };
-    expect(ProductSchema.safeParse(bad).success).toBe(false);
-  });
-
-  it("allows null originalPrice and null badge", () => {
-    const ok = { ...validProduct, originalPrice: null, badge: null };
+  it("allows a product without a comparison price", () => {
+    const ok = { ...validProduct, originalPrice: null };
     expect(ProductSchema.safeParse(ok).success).toBe(true);
   });
 });
@@ -59,40 +54,6 @@ describe("CartItemSchema", () => {
       size: "M", color: "Noir", qty: 100,
     };
     expect(CartItemSchema.safeParse(item).success).toBe(false);
-  });
-});
-
-describe("ShippingAddressSchema", () => {
-  it("accepts valid CA postal codes", () => {
-    const ok = {
-      email: "a@b.com", firstName: "A", lastName: "B",
-      address: "1 rue X", city: "Montréal", province: "QC",
-      postal: "H2X 1Y4", phone: "514-555-0123",
-    };
-    expect(ShippingAddressSchema.safeParse(ok).success).toBe(true);
-  });
-
-  it("rejects bad postal codes", () => {
-    const bad = {
-      email: "a@b.com", firstName: "A", lastName: "B",
-      address: "1 rue X", city: "Montréal", province: "QC",
-      postal: "12345",
-    };
-    expect(ShippingAddressSchema.safeParse(bad).success).toBe(false);
-  });
-
-  it("rejects bad emails", () => {
-    const bad = {
-      email: "not-an-email", firstName: "A", lastName: "B",
-      address: "1", city: "M", province: "QC", postal: "H2X 1Y4",
-    };
-    expect(ShippingAddressSchema.safeParse(bad).success).toBe(false);
-  });
-});
-
-describe("ConsentSchema", () => {
-  it("accepts valid consent", () => {
-    expect(ConsentSchema.safeParse({ essential: true, analytics: false, marketing: false }).success).toBe(true);
   });
 });
 

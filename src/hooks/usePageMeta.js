@@ -22,7 +22,7 @@ const ensureLink = (rel, href) => {
   el.setAttribute("href", href);
 };
 
-export default function usePageMeta({ title, description, jsonLd, canonical } = {}) {
+export default function usePageMeta({ title, description, canonical } = {}) {
   useEffect(() => {
     if (title) {
       document.title = title.endsWith("LuxeMode") ? title : `${title} — LuxeMode`;
@@ -40,15 +40,5 @@ export default function usePageMeta({ title, description, jsonLd, canonical } = 
       ensureLink("canonical", canonical || url);
     }
 
-    let scriptEl;
-    if (jsonLd) {
-      scriptEl = document.createElement("script");
-      scriptEl.type = "application/ld+json";
-      scriptEl.text = JSON.stringify(jsonLd);
-      document.head.appendChild(scriptEl);
-    }
-    return () => {
-      if (scriptEl && scriptEl.parentNode) scriptEl.parentNode.removeChild(scriptEl);
-    };
-  }, [title, description, JSON.stringify(jsonLd), canonical]);
+  }, [title, description, canonical]);
 }

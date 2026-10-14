@@ -1,617 +1,104 @@
-import { useEffect, useId, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Check,
-  CreditCard,
-  Truck,
-  ShieldCheck,
-  ChevronRight,
-  Lock,
-} from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, ArrowRight, Info, ShoppingBag } from "lucide-react";
 import { useApp } from "../context/AppContext";
-import { STR, formatPrice } from "../data/translations";
-import { getProductFallback } from "../utils/imageFallback";
-import Button from "../components/ui/Button";
-import Input from "../components/ui/Input";
+import { formatPrice } from "../data/translations";
 import usePageMeta from "../hooks/usePageMeta";
-
-// Luhn validation for card numbers
-const luhnCheck = (str) => {
-  const digits = (str || "").replace(/\D/g, "");
-  if (digits.length < 13 || digits.length > 19) return false;
-  let sum = 0;
-  let shouldDouble = false;
-  for (let i = digits.length - 1; i >= 0; i--) {
-    let d = parseInt(digits.charAt(i), 10);
-    if (shouldDouble) {
-      d *= 2;
-      if (d > 9) d -= 9;
-    }
-    sum += d;
-    shouldDouble = !shouldDouble;
-  }
-  return sum % 10 === 0;
-};
-
-const CA_POSTAL_RE = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const validateExpiry = (val) => {
-  const m = /^(\d{2})\/(\d{2})$/.exec(val || "");
-  if (!m) return { ok: false };
-  const month = parseInt(m[1], 10);
-  const year = 2000 + parseInt(m[2], 10);
-  if (month < 1 || month > 12) return { ok: false };
-  const now = new Date();
-  const expiry = new Date(year, month, 0, 23, 59, 59);
-  if (expiry < now) return { ok: false, expired: true };
-  return { ok: true };
-};
-
-const CA_PROVINCES = [
-  { value: "AB", label: "Alberta" },
-  { value: "BC", label: "Colombie-Britannique" },
-  { value: "MB", label: "Manitoba" },
-  { value: "NB", label: "Nouveau-Brunswick" },
-  { value: "NL", label: "Terre-Neuve-et-Labrador" },
-  { value: "NS", label: "Nouvelle-Écosse" },
-  { value: "NT", label: "Territoires du Nord-Ouest" },
-  { value: "NU", label: "Nunavut" },
-  { value: "ON", label: "Ontario" },
-  { value: "PE", label: "Île-du-Prince-Édouard" },
-  { value: "QC", label: "Québec" },
-  { value: "SK", label: "Saskatchewan" },
-  { value: "YT", label: "Yukon" },
-];
 
 export default function Checkout() {
   const navigate = useNavigate();
-  const {
-    lang, cart, cartTotal, cartShipping, cartTax, cartGrandTotal,
-    clearCart, addToast,
-  } = useApp();
-  const T = STR[lang];
-
-  const [step, setStep] = useState(1);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [acceptTerms, setAcceptTerms] = useState(false);
-  const termsId = useId();
-  const provinceId = useId();
-
-  const [shipping, setShipping] = useState({
-    email: "",
-    firstName: "",
-    lastName: "",
-    address: "",
-    city: "",
-    province: "QC",
-    postal: "",
-    phone: "",
-  });
-
-  const [payment, setPayment] = useState({
-    cardNumber: "",
-    cardName: "",
-    expiry: "",
-    cvv: "",
-  });
-
-  const [errors, setErrors] = useState({});
+  const { lang, cart, cartTotal, cartDiscount, cartShipping, cartTax, cartGrandTotal, promoCode, clearCart } = useApp();
+  const [acknowledged, setAcknowledged] = useState(false);
+  const [completed, setCompleted] = useState(false);
+  const fr = lang === "fr";
 
   usePageMeta({
-    title: T.checkout,
-    description:
-      lang === "fr"
-        ? "Finalisez votre commande LuxeMode en toute sécurité."
-        : "Securely complete your LuxeMode order.",
+    title: fr ? "Vérification du panier — Démo" : "Review your cart — Demo",
+    description: fr ? "Parcours de démonstration sans achat ni paiement réel." : "Demo checkout with no real purchase or payment.",
   });
 
-  // Empty cart guard — side effect lives in useEffect, NOT render.
   useEffect(() => {
-    if (cart.length === 0) navigate("/cart", { replace: true });
-  }, [cart.length, navigate]);
+    if (!completed && cart.length === 0) navigate("/cart", { replace: true });
+  }, [cart.length, completed, navigate]);
 
   if (cart.length === 0) return null;
 
-  const validateShipping = () => {
-    const e = {};
-    if (!shipping.email.trim()) e.email = T.required_field;
-    else if (!EMAIL_RE.test(shipping.email)) e.email = T.invalid_email;
-    if (!shipping.firstName.trim()) e.firstName = T.required_field;
-    if (!shipping.lastName.trim()) e.lastName = T.required_field;
-    if (!shipping.address.trim()) e.address = T.required_field;
-    if (!shipping.city.trim()) e.city = T.required_field;
-    if (!shipping.postal.trim()) e.postal = T.required_field;
-    else if (!CA_POSTAL_RE.test(shipping.postal)) e.postal = T.invalid_postal_ca;
-    setErrors(e);
-    return Object.keys(e).length === 0;
-  };
-
-  const validatePayment = () => {
-    const e = {};
-    if (!payment.cardNumber.trim()) e.cardNumber = T.required_field;
-    else if (!luhnCheck(payment.cardNumber)) e.cardNumber = T.invalid_card_luhn;
-    if (!payment.cardName.trim()) e.cardName = T.required_field;
-    if (!payment.expiry.trim()) e.expiry = T.required_field;
-    else {
-      const exp = validateExpiry(payment.expiry);
-      if (!exp.ok) e.expiry = exp.expired ? T.expired_card : T.invalid_expiry;
-    }
-    if (!payment.cvv.trim()) e.cvv = T.required_field;
-    else if (payment.cvv.length < 3) e.cvv = T.invalid_cvv;
-    setErrors(e);
-    return Object.keys(e).length === 0;
-  };
-
-  const handleNextStep = () => {
-    if (step === 1 && validateShipping()) {
-      setStep(2);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else if (step === 2 && validatePayment()) {
-      setStep(3);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  };
-
-  const handleConfirmOrder = async () => {
-    if (!acceptTerms) {
-      setErrors({ terms: T.must_accept_terms });
-      addToast(T.must_accept_terms, "error");
-      return;
-    }
-    setErrors({});
-    setIsProcessing(true);
-    try {
-      // Simulated API call.
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      const orderNumber = `LM-${Date.now().toString().slice(-8)}`;
-      // Persist order context for /thanks page (resists refresh and direct access).
-      sessionStorage.setItem(
-        "lm_last_order",
-        JSON.stringify({
-          orderNumber,
-          email: shipping.email,
-          name: `${shipping.firstName} ${shipping.lastName}`,
-          total: cartGrandTotal,
-          itemsCount: cart.reduce((sum, it) => sum + it.qty, 0),
-          createdAt: new Date().toISOString(),
-          lang,
-        })
-      );
-      clearCart();
-      addToast(T.order_confirmed, "success");
-      navigate("/thanks", { replace: true });
-    } catch {
-      addToast(lang === "fr" ? "Une erreur est survenue" : "An error occurred", "error");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const formatCardNumber = (value) => {
-    const v = value.replace(/\s+/g, "").replace(/[^0-9]/g, "");
-    const match = v.match(/.{1,4}/g);
-    return match ? match.join(" ") : v;
-  };
-
-  const formatExpiry = (value) => {
-    const v = value.replace(/\D/g, "").slice(0, 4);
-    if (v.length >= 2) return v.substring(0, 2) + "/" + v.substring(2);
-    return v;
-  };
-
-  const steps = [
-    { num: 1, label: T.step1, icon: Truck },
-    { num: 2, label: T.step2, icon: CreditCard },
-    { num: 3, label: T.step3, icon: Check },
-  ];
+  function finishDemo() {
+    if (!acknowledged) return;
+    const order = {
+      orderNumber: `DEMO-${Date.now().toString().slice(-8)}`,
+      total: cartGrandTotal,
+      itemsCount: cart.reduce((sum, item) => sum + item.qty, 0),
+      createdAt: new Date().toISOString(),
+      demo: true,
+    };
+    try { sessionStorage.setItem("lm_last_order", JSON.stringify(order)); } catch { /* demo still completes */ }
+    setCompleted(true);
+    clearCart();
+    navigate("/thanks", { replace: true, state: { result: order } });
+  }
 
   return (
-    <div className="min-h-screen py-4 sm:py-8">
-      <div className="container-luxe">
-        <nav className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-4 sm:mb-8" aria-label="Fil d'Ariane">
-          <Link to="/" className="hover:text-gray-900 dark:hover:text-white">{T.nav_shop}</Link>
-          <ChevronRight className="w-4 h-4" aria-hidden="true" />
-          <Link to="/cart" className="hover:text-gray-900 dark:hover:text-white">{T.cart}</Link>
-          <ChevronRight className="w-4 h-4" aria-hidden="true" />
-          <span className="text-gray-900 dark:text-white font-medium" aria-current="page">{T.checkout}</span>
-        </nav>
-
-        <ol className="flex items-center justify-center gap-2 md:gap-8 mb-6 sm:mb-12" aria-label="Étapes du paiement">
-          {steps.map((s, i) => (
-            <li key={s.num} className="flex items-center">
-              <motion.div
-                initial={{ scale: 0.85 }}
-                animate={{ scale: step >= s.num ? 1 : 0.85 }}
-                aria-current={step === s.num ? "step" : undefined}
-                className={`
-                  flex items-center gap-2 px-4 py-2 rounded-full
-                  ${
-                    step >= s.num
-                      ? "bg-luxury-charcoal dark:bg-accent text-accent dark:text-luxury-noir"
-                      : "bg-gray-200 dark:bg-luxury-charcoal/40 text-gray-500"
-                  }
-                `}
-              >
-                <s.icon className="w-4 h-4" aria-hidden="true" />
-                <span className="hidden sm:inline font-medium">{s.label}</span>
-                <span className="sm:hidden font-medium">{s.num}</span>
-              </motion.div>
-              {i < steps.length - 1 && (
-                <div
-                  className={`w-8 md:w-16 h-0.5 ml-4 ${step > s.num ? "bg-luxury-charcoal dark:bg-accent" : "bg-gray-200 dark:bg-luxury-charcoal/40"}`}
-                  aria-hidden="true"
-                />
-              )}
-            </li>
-          ))}
-        </ol>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
-          <div className="lg:col-span-2">
-            <AnimatePresence mode="wait">
-              {step === 1 && (
-                <motion.section
-                  key="shipping"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="bg-white dark:bg-luxury-charcoal/40 rounded-2xl p-6 md:p-8 border border-gray-100 dark:border-luxury-charcoal"
-                  aria-labelledby="shipping-heading"
-                >
-                  <h2 id="shipping-heading" className="text-2xl font-serif font-bold text-gray-900 dark:text-white mb-6">
-                    {T.shipping_address}
-                  </h2>
-
-                  <form onSubmit={(e) => { e.preventDefault(); handleNextStep(); }} noValidate className="space-y-4">
-                    <Input
-                      label={T.email}
-                      type="email"
-                      autoComplete="email"
-                      required
-                      value={shipping.email}
-                      onChange={(e) => setShipping({ ...shipping, email: e.target.value })}
-                      error={errors.email}
-                      placeholder="email@example.com"
-                    />
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <Input
-                        label={T.first}
-                        autoComplete="given-name"
-                        required
-                        value={shipping.firstName}
-                        onChange={(e) => setShipping({ ...shipping, firstName: e.target.value })}
-                        error={errors.firstName}
-                      />
-                      <Input
-                        label={T.last}
-                        autoComplete="family-name"
-                        required
-                        value={shipping.lastName}
-                        onChange={(e) => setShipping({ ...shipping, lastName: e.target.value })}
-                        error={errors.lastName}
-                      />
-                    </div>
-
-                    <Input
-                      label={T.address}
-                      autoComplete="street-address"
-                      required
-                      value={shipping.address}
-                      onChange={(e) => setShipping({ ...shipping, address: e.target.value })}
-                      error={errors.address}
-                    />
-
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      <Input
-                        label={T.city}
-                        autoComplete="address-level2"
-                        required
-                        value={shipping.city}
-                        onChange={(e) => setShipping({ ...shipping, city: e.target.value })}
-                        error={errors.city}
-                      />
-
-                      <div>
-                        <label
-                          htmlFor={provinceId}
-                          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5"
-                        >
-                          {T.province}
-                          <span className="text-red-500 ml-1" aria-hidden="true">*</span>
-                        </label>
-                        <select
-                          id={provinceId}
-                          required
-                          value={shipping.province}
-                          autoComplete="address-level1"
-                          onChange={(e) => setShipping({ ...shipping, province: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl bg-white dark:bg-luxury-noir border-2 border-gray-200 dark:border-luxury-charcoal text-gray-900 dark:text-white focus:outline-none focus:border-accent focus:shadow-lg focus:shadow-accent/10"
-                        >
-                          {CA_PROVINCES.map((p) => (
-                            <option key={p.value} value={p.value}>{p.label}</option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <Input
-                        label={T.postal}
-                        autoComplete="postal-code"
-                        required
-                        value={shipping.postal}
-                        onChange={(e) => setShipping({ ...shipping, postal: e.target.value.toUpperCase() })}
-                        error={errors.postal}
-                        placeholder="H2X 1Y4"
-                      />
-                    </div>
-
-                    <Input
-                      label={T.phone}
-                      type="tel"
-                      autoComplete="tel"
-                      value={shipping.phone}
-                      onChange={(e) => setShipping({ ...shipping, phone: e.target.value })}
-                      placeholder="+1 (514) 555-0123"
-                    />
-
-                    <div className="flex flex-col-reverse sm:flex-row gap-4 mt-8">
-                      <Link to="/cart">
-                        <Button variant="ghost" icon={ArrowLeft}>
-                          {T.back_cart}
-                        </Button>
-                      </Link>
-                      <Button
-                        type="submit"
-                        icon={ArrowRight}
-                        iconPosition="right"
-                        className="flex-1"
-                      >
-                        {T.continue}
-                      </Button>
-                    </div>
-                  </form>
-                </motion.section>
-              )}
-
-              {step === 2 && (
-                <motion.section
-                  key="payment"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="bg-white dark:bg-luxury-charcoal/40 rounded-2xl p-6 md:p-8 border border-gray-100 dark:border-luxury-charcoal"
-                  aria-labelledby="payment-heading"
-                >
-                  <h2 id="payment-heading" className="text-2xl font-serif font-bold text-gray-900 dark:text-white mb-6">
-                    {T.payment}
-                  </h2>
-
-                  <form onSubmit={(e) => { e.preventDefault(); handleNextStep(); }} noValidate className="space-y-4">
-                    <Input
-                      label={T.card_number}
-                      autoComplete="cc-number"
-                      inputMode="numeric"
-                      required
-                      value={payment.cardNumber}
-                      onChange={(e) => setPayment({ ...payment, cardNumber: formatCardNumber(e.target.value) })}
-                      error={errors.cardNumber}
-                      placeholder="1234 5678 9012 3456"
-                      maxLength={23}
-                      icon={CreditCard}
-                    />
-
-                    <Input
-                      label={T.card_name}
-                      autoComplete="cc-name"
-                      required
-                      value={payment.cardName}
-                      onChange={(e) => setPayment({ ...payment, cardName: e.target.value })}
-                      error={errors.cardName}
-                      placeholder="John Doe"
-                    />
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <Input
-                        label={T.exp}
-                        autoComplete="cc-exp"
-                        inputMode="numeric"
-                        required
-                        value={payment.expiry}
-                        onChange={(e) => setPayment({ ...payment, expiry: formatExpiry(e.target.value) })}
-                        error={errors.expiry}
-                        placeholder="MM/YY"
-                        maxLength={5}
-                      />
-                      <Input
-                        label={T.cvv}
-                        autoComplete="cc-csc"
-                        inputMode="numeric"
-                        required
-                        value={payment.cvv}
-                        onChange={(e) => setPayment({ ...payment, cvv: e.target.value.replace(/\D/g, "").slice(0, 4) })}
-                        error={errors.cvv}
-                        placeholder="123"
-                        maxLength={4}
-                        type="password"
-                      />
-                    </div>
-
-                    <div className="flex items-center gap-2 mt-4 text-sm text-gray-500 dark:text-gray-400">
-                      <Lock className="w-4 h-4 text-emerald-500" aria-hidden="true" />
-                      {T.secure_badge}
-                    </div>
-
-                    <div className="flex flex-col-reverse sm:flex-row gap-4 mt-8">
-                      <Button type="button" variant="ghost" icon={ArrowLeft} onClick={() => setStep(1)}>
-                        {T.back}
-                      </Button>
-                      <Button
-                        type="submit"
-                        icon={ArrowRight}
-                        iconPosition="right"
-                        className="flex-1"
-                      >
-                        {T.continue}
-                      </Button>
-                    </div>
-                  </form>
-                </motion.section>
-              )}
-
-              {step === 3 && (
-                <motion.section
-                  key="confirmation"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="space-y-6"
-                  aria-labelledby="confirmation-heading"
-                >
-                  <h2 id="confirmation-heading" className="sr-only">{T.step3}</h2>
-
-                  <div className="bg-white dark:bg-luxury-charcoal/40 rounded-2xl p-6 border border-gray-100 dark:border-luxury-charcoal">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="font-semibold text-gray-900 dark:text-white">{T.shipping_address}</h3>
-                      <button type="button" onClick={() => setStep(1)} className="text-sm text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded">
-                        {lang === "fr" ? "Modifier" : "Edit"}
-                      </button>
-                    </div>
-                    <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                      {shipping.firstName} {shipping.lastName}<br />
-                      {shipping.address}<br />
-                      {shipping.city}, {shipping.province} {shipping.postal}<br />
-                      {shipping.email}{shipping.phone && <> • {shipping.phone}</>}
+    <div className="min-h-[70vh] py-10 sm:py-16">
+      <div className="container-luxe max-w-5xl">
+        <Link to="/cart" className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 hover:text-accent mb-7">
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" /> {fr ? "Retour au panier" : "Back to cart"}
+        </Link>
+        <div className="mb-9">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent mb-3">
+            {fr ? "Dernière étape · Démonstration" : "Final step · Demo"}
+          </p>
+          <h1 className="font-serif text-4xl sm:text-5xl text-gray-900 dark:text-white">
+            {fr ? "Vérifiez votre sélection" : "Review your selection"}
+          </h1>
+          <p className="mt-4 max-w-2xl text-gray-600 dark:text-gray-300">
+            {fr ? "Ce parcours sert à montrer l’interface et le calcul du panier. Aucun article n’est vendu, aucun paiement n’est demandé et aucune commande ne sera expédiée." : "This flow demonstrates the interface and cart calculations. Nothing is sold, no payment is collected and no order will be shipped."}
+          </p>
+        </div>
+        <div className="grid gap-8 lg:grid-cols-[1.35fr_0.85fr]">
+          <section className="rounded-3xl border border-gray-200 bg-white p-5 sm:p-8 dark:border-white/10 dark:bg-luxury-charcoal/30" aria-labelledby="selection-heading">
+            <h2 id="selection-heading" className="font-serif text-2xl text-gray-900 dark:text-white mb-6">
+              {fr ? "Votre sélection" : "Your selection"}
+            </h2>
+            <ul className="divide-y divide-gray-100 dark:divide-white/10">
+              {cart.map((item, index) => (
+                <li key={`${item.id}-${item.size}-${item.color}-${index}`} className="flex items-center gap-4 py-4 first:pt-0 last:pb-0">
+                  <img src={item.image} alt="" width="80" height="96" className="h-20 w-16 shrink-0 rounded-xl object-cover bg-gray-100" />
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-gray-900 dark:text-white">{item.name[lang]}</p>
+                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                      {[item.size, item.color].filter(Boolean).join(" · ")} · {fr ? "Qté" : "Qty"} {item.qty}
                     </p>
                   </div>
-
-                  <div className="bg-white dark:bg-luxury-charcoal/40 rounded-2xl p-6 border border-gray-100 dark:border-luxury-charcoal">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="font-semibold text-gray-900 dark:text-white">{T.payment}</h3>
-                      <button type="button" onClick={() => setStep(2)} className="text-sm text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded">
-                        {lang === "fr" ? "Modifier" : "Edit"}
-                      </button>
-                    </div>
-                    <p className="text-gray-600 dark:text-gray-400 inline-flex items-center gap-2">
-                      <CreditCard className="w-4 h-4" aria-hidden="true" />
-                      {lang === "fr" ? "Carte" : "Card"} •••• {payment.cardNumber.replace(/\s/g, "").slice(-4)}
-                    </p>
-                  </div>
-
-                  <label htmlFor={termsId} className="flex items-start gap-3 cursor-pointer bg-gray-50 dark:bg-luxury-charcoal/30 rounded-2xl p-4 border border-gray-100 dark:border-luxury-charcoal">
-                    <input
-                      id={termsId}
-                      type="checkbox"
-                      checked={acceptTerms}
-                      onChange={(e) => setAcceptTerms(e.target.checked)}
-                      aria-describedby={errors.terms ? `${termsId}-error` : undefined}
-                      aria-invalid={errors.terms ? true : undefined}
-                      className="mt-1 w-5 h-5 rounded text-accent focus:ring-accent focus:ring-offset-0"
-                    />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
-                      {T.accept_terms}{" "}
-                      <Link to="/about#terms" className="text-accent underline hover:no-underline">
-                        {T.terms_link}
-                      </Link>{" "}
-                      {T.and}{" "}
-                      <Link to="/about#privacy" className="text-accent underline hover:no-underline">
-                        {T.privacy_link}
-                      </Link>.
-                    </span>
-                  </label>
-                  {errors.terms && (
-                    <p id={`${termsId}-error`} role="alert" className="text-sm text-red-500">
-                      {errors.terms}
-                    </p>
-                  )}
-
-                  <div className="flex flex-col-reverse sm:flex-row gap-4">
-                    <Button variant="ghost" icon={ArrowLeft} onClick={() => setStep(2)} disabled={isProcessing}>
-                      {T.back}
-                    </Button>
-                    <Button
-                      icon={Check}
-                      iconPosition="right"
-                      onClick={handleConfirmOrder}
-                      loading={isProcessing}
-                      disabled={isProcessing}
-                      className="flex-1"
-                    >
-                      {isProcessing ? T.processing : T.confirm_order}
-                    </Button>
-                  </div>
-                </motion.section>
-              )}
-            </AnimatePresence>
-          </div>
-
-          <aside className="lg:col-span-1" aria-label={T.order_summary}>
-            <div className="sticky top-24 bg-gray-50 dark:bg-luxury-charcoal/30 rounded-2xl p-6 border border-gray-100 dark:border-luxury-charcoal">
-              <h2 className="text-xl font-serif font-bold text-gray-900 dark:text-white mb-6">
-                {T.order_summary}
-              </h2>
-
-              <ul className="space-y-4 mb-6">
-                {cart.map((item) => (
-                  <li key={`${item.id}-${item.size}-${item.color}`} className="flex gap-3">
-                    <div className="w-16 h-20 rounded-lg overflow-hidden bg-gray-100 dark:bg-luxury-noir flex-shrink-0">
-                      <img
-                        src={item.image}
-                        alt=""
-                        width={64}
-                        height={80}
-                        loading="lazy"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.onerror = null;
-                          e.currentTarget.src = getProductFallback({ seed: item.id, label: item.name[lang], category: item.category[lang], w: 128, h: 160 });
-                        }}
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-gray-900 dark:text-white text-sm truncate">
-                        {item.name[lang]}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {item.qty} × {formatPrice(item.price, lang)}
-                      </p>
-                    </div>
-                    <p className="font-medium text-gray-900 dark:text-white">
-                      {formatPrice(item.price * item.qty, lang)}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-
-              <dl className="space-y-2 text-sm border-t border-gray-200 dark:border-luxury-charcoal pt-4">
-                <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                  <dt>{T.subtotal}</dt>
-                  <dd>{formatPrice(cartTotal, lang)}</dd>
-                </div>
-                <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                  <dt>{T.shipping}</dt>
-                  <dd className={cartShipping === 0 ? "text-emerald-600 dark:text-emerald-400 font-medium" : ""}>
-                    {cartShipping === 0 ? T.shipping_free : formatPrice(cartShipping, lang)}
-                  </dd>
-                </div>
-                <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                  <dt>{T.taxes}</dt>
-                  <dd>{formatPrice(cartTax, lang)}</dd>
-                </div>
-                <div className="flex justify-between text-lg font-bold text-gray-900 dark:text-white pt-2 border-t border-gray-200 dark:border-luxury-charcoal">
-                  <dt>{T.total}</dt>
-                  <dd>{formatPrice(cartGrandTotal, lang)}</dd>
-                </div>
-              </dl>
-
-              <div className="flex items-center justify-center gap-2 mt-6 text-sm text-gray-500 dark:text-gray-400">
-                <ShieldCheck className="w-4 h-4 text-emerald-500" aria-hidden="true" />
-                {T.secure_badge}
-              </div>
-            </div>
+                  <p className="whitespace-nowrap font-semibold text-gray-900 dark:text-white">{formatPrice(item.price * item.qty, lang)}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+          <aside className="self-start rounded-3xl border border-gray-200 bg-[#f6f0eb] p-5 sm:p-7 dark:border-white/10 dark:bg-luxury-charcoal/40" aria-labelledby="summary-heading">
+            <h2 id="summary-heading" className="font-serif text-2xl text-gray-900 dark:text-white mb-5">
+              {fr ? "Récapitulatif" : "Summary"}
+            </h2>
+            <dl className="space-y-3 text-sm">
+              <div className="flex justify-between gap-3"><dt>{fr ? "Sous-total" : "Subtotal"}</dt><dd>{formatPrice(cartTotal, lang)}</dd></div>
+              {cartDiscount > 0 && <div className="flex justify-between gap-3 text-emerald-700 dark:text-emerald-400"><dt>{fr ? "Remise" : "Discount"} {promoCode}</dt><dd>-{formatPrice(cartDiscount, lang)}</dd></div>}
+              <div className="flex justify-between gap-3"><dt>{fr ? "Livraison simulée" : "Demo shipping"}</dt><dd>{formatPrice(cartShipping, lang)}</dd></div>
+              <div className="flex justify-between gap-3"><dt>{fr ? "Taxes estimées" : "Estimated tax"}</dt><dd>{formatPrice(cartTax, lang)}</dd></div>
+              <div className="flex justify-between gap-3 border-t border-gray-300/60 pt-4 text-lg font-bold text-gray-900 dark:text-white dark:border-white/10"><dt>{fr ? "Total fictif" : "Demo total"}</dt><dd>{formatPrice(cartGrandTotal, lang)}</dd></div>
+            </dl>
+            <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-xl border border-accent/30 bg-white/70 p-4 text-sm dark:bg-luxury-noir/40">
+              <input type="checkbox" checked={acknowledged} onChange={(e) => setAcknowledged(e.target.checked)} className="mt-0.5 h-4 w-4 accent-[#6B2D4A]" />
+              <span>{fr ? "Je comprends qu’il s’agit d’une simulation sans paiement ni livraison." : "I understand this is a simulation with no payment or delivery."}</span>
+            </label>
+            <button type="button" onClick={finishDemo} disabled={!acknowledged} className="mt-4 flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-luxury-wine px-5 py-3 font-semibold text-white transition-colors hover:bg-luxury-plum disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+              <ShoppingBag className="h-5 w-5" aria-hidden="true" />
+              {fr ? "Terminer la simulation" : "Finish the demo"}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </button>
+            <p className="mt-4 flex gap-2 text-xs leading-relaxed text-gray-600 dark:text-gray-400">
+              <Info className="h-4 w-4 shrink-0" aria-hidden="true" />
+              {fr ? "Aucune coordonnée personnelle ou bancaire n’est requise." : "No personal or payment details are required."}
+            </p>
           </aside>
         </div>
       </div>

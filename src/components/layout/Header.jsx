@@ -140,7 +140,7 @@ export default function Header() {
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
         className={`
-          fixed top-0 left-0 right-0 z-50
+          sticky top-0 z-50
           bg-luxury-noir/90 backdrop-blur-xl
           transition-all duration-300 ease-out
           ${
@@ -519,8 +519,6 @@ export default function Header() {
         )}
       </AnimatePresence>
 
-      {/* Spacer for fixed header */}
-      <div className="h-20" aria-hidden="true" />
     </>
   );
 }

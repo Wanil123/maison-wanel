@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.1.0",
   "type": "module",
-  "description": "LuxeMode — boutique e-commerce de mode premium (React 19 + Vite 7 + Tailwind 3).",
+  "description": "LuxeMode — concept de boutique e-commerce fictive pour un portfolio React.",
   "engines": {
     "node": ">=20.19"
   },

@@ -17,13 +17,7 @@ import { STR, formatPrice } from "../data/translations";
 import { getProductFallback } from "../utils/imageFallback";
 import Button from "../components/ui/Button";
 import usePageMeta from "../hooks/usePageMeta";
-
-// Demo promo codes — for showcase only. A real store reads them from the backend.
-const PROMO_CODES = {
-  LUXE10: 0.1,
-  WELCOME: 0.15,
-  VIP20: 0.2,
-};
+import { PROMO_CODES } from "../utils/pricing";
 
 export default function Cart() {
   const {
@@ -35,6 +29,9 @@ export default function Cart() {
     cartShipping,
     cartTax,
     cartGrandTotal,
+    cartDiscount,
+    promoCode,
+    setPromoCode,
     FREE_SHIPPING_THRESHOLD,
     addToast,
   } = useApp();
@@ -43,11 +40,7 @@ export default function Cart() {
   const promoInputId = useId();
 
   const [promoInput, setPromoInput] = useState("");
-  const [promoCode, setPromoCode] = useState("");
-
-  const promoDiscountRate = promoCode ? PROMO_CODES[promoCode] || 0 : 0;
-  const promoDiscount = cartTotal * promoDiscountRate;
-  const totalWithPromo = Math.max(0, cartGrandTotal - promoDiscount);
+  const promoDiscount = cartDiscount;
   const progressPct = Math.min(100, (cartTotal / FREE_SHIPPING_THRESHOLD) * 100);
 
   const applyPromo = (e) => {
@@ -58,7 +51,7 @@ export default function Cart() {
       addToast(T.promo_already_used, "info");
       return;
     }
-    if (PROMO_CODES[code]) {
+    if (Object.hasOwn(PROMO_CODES, code)) {
       setPromoCode(code);
       addToast(`${T.promo_applied}: ${code} (-${PROMO_CODES[code] * 100}%)`, "success");
       setPromoInput("");
@@ -76,8 +69,8 @@ export default function Cart() {
     title: T.cart,
     description:
       lang === "fr"
-        ? "Consultez votre panier LuxeMode et finalisez votre commande en toute sécurité."
-        : "Review your LuxeMode cart and check out securely.",
+        ? "Consultez votre panier LuxeMode et essayez le récapitulatif de démonstration."
+        : "Review your LuxeMode cart and try the demo summary.",
   });
 
   if (cart.length === 0) {
@@ -299,7 +292,7 @@ export default function Cart() {
                 <div className="border-t border-gray-200 dark:border-luxury-charcoal pt-3 mt-3">
                   <div className="flex justify-between text-lg font-bold text-gray-900 dark:text-white">
                     <dt>{T.total}</dt>
-                    <dd>{formatPrice(totalWithPromo, lang)}</dd>
+                    <dd>{formatPrice(cartGrandTotal, lang)}</dd>
                   </div>
                 </div>
               </dl>
@@ -308,8 +301,8 @@ export default function Cart() {
                 <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl">
                   <p className="text-sm text-amber-800 dark:text-amber-300">
                     {lang === "fr"
-                      ? `Ajoutez ${formatPrice(FREE_SHIPPING_THRESHOLD - cartTotal, lang)} pour la livraison gratuite !`
-                      : `Add ${formatPrice(FREE_SHIPPING_THRESHOLD - cartTotal, lang)} more for free shipping!`}
+                      ? `Ajoutez ${formatPrice(FREE_SHIPPING_THRESHOLD - cartTotal, lang)} pour simuler la livraison gratuite.`
+                      : `Add ${formatPrice(FREE_SHIPPING_THRESHOLD - cartTotal, lang)} to simulate free shipping.`}
                   </p>
                   <div
                     className="mt-2 h-2 bg-amber-200 dark:bg-amber-900/50 rounded-full overflow-hidden"
@@ -341,7 +334,7 @@ export default function Cart() {
 
               <div className="flex items-center justify-center gap-2 mt-4 text-sm text-gray-500 dark:text-gray-400">
                 <ShieldCheck className="w-4 h-4 text-emerald-500" aria-hidden="true" />
-                {T.secure_badge}
+                {lang === "fr" ? "Simulation — aucun paiement réel" : "Demo — no real payment"}
               </div>
             </motion.div>
           </aside>
