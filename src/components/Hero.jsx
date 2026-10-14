@@ -11,6 +11,7 @@ const collections = [
 export default function Hero() {
   const { lang } = useApp();
   const fr = lang === "fr";
+  const scrollToCollection = () => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
   return (
     <section className="bg-[#241422] text-white overflow-hidden">
       <div className="container-luxe grid lg:grid-cols-[1fr_0.86fr] items-center gap-10 lg:gap-16 py-14 sm:py-20 lg:py-24">
@@ -26,9 +27,9 @@ export default function Hero() {
             {fr ? "Explorez une sélection de mode imaginée pour cette démonstration. Découvrez le catalogue, composez vos favoris et essayez le parcours d’achat." : "Explore a fashion collection created for this demo. Browse the catalogue, save favourites and try the checkout flow."}
           </p>
           <div className="flex flex-wrap gap-3 mt-9">
-            <a href="#products" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 font-semibold text-luxury-noir hover:bg-accent-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">
+            <button type="button" onClick={scrollToCollection} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 font-semibold text-luxury-noir hover:bg-accent-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">
               {fr ? "Explorer la collection" : "Explore the collection"} <ArrowRight className="w-4 h-4" aria-hidden="true" />
-            </a>
+            </button>
             <Link to="/about" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/25 px-6 py-3 font-medium text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">
               {fr ? "Découvrir le projet" : "About the project"} <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
             </Link>
@@ -47,9 +48,9 @@ export default function Hero() {
                 <p className="text-xs uppercase tracking-[0.22em] text-accent-light">Maison Wanél / 01</p>
                 <p className="mt-2 font-serif text-2xl sm:text-3xl">{fr ? "Une allure à soi" : "Style of your own"}</p>
               </div>
-              <a href="#products" aria-label={fr ? "Voir la collection" : "View collection"} className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-luxury-noir hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+              <button type="button" onClick={scrollToCollection} aria-label={fr ? "Voir la collection" : "View collection"} className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-luxury-noir hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
                 <ArrowUpRight className="h-5 w-5" aria-hidden="true" />
-              </a>
+              </button>
             </div>
           </div>
         </div>

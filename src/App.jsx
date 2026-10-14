@@ -62,15 +62,16 @@ function PageTransition({ children }) {
 function Layout({ children }) {
   return (
     <div className="min-h-screen flex flex-col bg-luxury-ivory dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-500">
-      <a
-        href="#main-content"
+      <button
+        type="button"
+        onClick={() => document.getElementById("main-content")?.focus()}
         className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-luxury-charcoal focus:text-accent focus:rounded-lg focus:shadow-lg"
       >
         Aller au contenu principal
-      </a>
+      </button>
       <AnnouncementBar />
       <Header />
-      <main id="main-content" className="flex-1">
+      <main id="main-content" tabIndex={-1} className="flex-1">
         <ErrorBoundary>
           <PageTransition>{children}</PageTransition>
         </ErrorBoundary>
