@@ -13,7 +13,7 @@ const features = [
 export default function About() {
   const { lang } = useApp();
   const fr = lang === "fr";
-  usePageMeta({ title: fr ? "Le projet — LuxeMode" : "The project — LuxeMode", description: fr ? "Étude de cas du projet e-commerce React LuxeMode." : "A case study of the LuxeMode React storefront." });
+  usePageMeta({ title: fr ? "Le projet — Maison Wanél" : "The project — Maison Wanél", description: fr ? "Étude de cas du projet e-commerce React Maison Wanél." : "A case study of the Maison Wanél React storefront." });
 
   return (
     <div>
@@ -21,7 +21,7 @@ export default function About() {
         <div className="container-luxe grid gap-10 py-16 sm:py-24 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">{fr ? "Étude de cas · Portfolio" : "Case study · Portfolio"}</p>
-            <h1 className="mt-5 max-w-[13ch] font-serif text-4xl leading-tight sm:text-6xl">{fr ? "LuxeMode, une boutique pensée comme une expérience." : "LuxeMode, a storefront built as an experience."}</h1>
+            <h1 className="mt-5 max-w-[13ch] font-serif text-4xl leading-tight sm:text-6xl">{fr ? "Maison Wanél, une boutique pensée comme une expérience." : "Maison Wanél, a storefront built as an experience."}</h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-[#dacbd2]">
               {fr ? "Un projet personnel conçu pour démontrer mon travail en React : architecture de composants, gestion d’état, navigation, interface bilingue et soin du détail visuel." : "A personal project showcasing my React work: component architecture, state management, routing, bilingual UI and visual detail."}
             </p>
@@ -31,7 +31,7 @@ export default function About() {
             </div>
           </div>
           <div className="relative overflow-hidden rounded-[1.8rem] border border-white/15">
-            <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1000&q=85" alt={fr ? "Ambiance visuelle utilisée pour le concept LuxeMode" : "Visual mood for the LuxeMode concept"} width="1000" height="1100" className="aspect-[4/4.2] w-full object-cover" />
+            <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1000&q=85" alt={fr ? "Ambiance visuelle utilisée pour le concept Maison Wanél" : "Visual mood for the Maison Wanél concept"} width="1000" height="1100" className="aspect-[4/4.2] w-full object-cover" />
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-luxury-noir/85 to-transparent p-7">
               <p className="font-serif text-2xl">{fr ? "Éditorial, simple, interactif." : "Editorial, simple, interactive."}</p>
             </div>

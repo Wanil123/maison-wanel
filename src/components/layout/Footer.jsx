@@ -9,7 +9,7 @@ export default function Footer() {
     <footer className="border-t border-gray-200 bg-[#f7f2ed] text-gray-900 dark:border-white/10 dark:bg-luxury-noir dark:text-white">
       <div className="container-luxe grid gap-10 py-12 sm:grid-cols-[1.5fr_1fr_1fr] sm:py-16">
         <div className="max-w-sm">
-          <Link to="/" className="font-serif text-2xl font-bold">LuxeMode<span className="text-accent">.</span></Link>
+          <Link to="/" className="font-serif text-2xl font-bold">Maison Wanél<span className="text-accent">.</span></Link>
           <p className="mt-4 leading-relaxed text-gray-600 dark:text-gray-300">
             {fr ? "Une boutique conceptuelle conçue par Wanil Parfait pour présenter son travail en développement web." : "A concept storefront built by Wanil Parfait to showcase his web development work."}
           </p>
@@ -36,7 +36,7 @@ export default function Footer() {
         </nav>
       </div>
       <div className="container-luxe flex flex-wrap justify-between gap-3 border-t border-gray-200 py-5 text-xs text-gray-500 dark:border-white/10 dark:text-gray-400">
-        <span>© {new Date().getFullYear()} LuxeMode · Wanil Parfait</span>
+        <span>© {new Date().getFullYear()} Maison Wanél · Wanil Parfait</span>
         <span>{fr ? "Images : Unsplash et Pexels · Données produit fictives" : "Images: Unsplash and Pexels · Fictional product data"}</span>
       </div>
     </footer>

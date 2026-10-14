@@ -27,8 +27,8 @@ export default function Shop() {
     title: lang === "fr" ? "Boutique — Collection Printemps 2026" : "Shop — Spring 2026 Collection",
     description:
       lang === "fr"
-        ? "Explorez le concept de boutique LuxeMode, un projet React de portfolio avec catalogue, favoris et panier de démonstration."
-        : "Explore LuxeMode, a React portfolio storefront with a catalogue, favourites and demo cart.",
+        ? "Explorez le concept de boutique Maison Wanél, un projet React de portfolio avec catalogue, favoris et panier de démonstration."
+        : "Explore Maison Wanél, a React portfolio storefront with a catalogue, favourites and demo cart.",
   });
 
   // Sync gender from URL query param without clobbering category if URL didn't request it.

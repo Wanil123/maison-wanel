@@ -2,8 +2,8 @@
 export const STR = {
   fr: {
     // Brand
-    brand: "LuxeMode",
-    tagline: "L'élégance redéfinie",
+    brand: "Maison Wanél",
+    tagline: "Le vestiaire imaginé",
 
     // Navigation
     nav_shop: "Boutique",
@@ -137,9 +137,9 @@ export const STR = {
     continue_shopping_btn: "Continuer mes achats",
 
     // About
-    about_title: "À propos de LuxeMode",
+    about_title: "À propos de Maison Wanél",
     about_subtitle: "Qualité. Design. Confiance. Nous créons des essentiels modernes faits pour durer.",
-    about_p1: "Fondée à Montréal, LuxeMode propose des pièces intemporelles conçues avec des matériaux premium et une attention maniaque aux détails.",
+    about_p1: "Maison Wanél est un concept e-commerce fictif créé par Wanil Parfait pour présenter son travail en React et en design d'interface.",
     about_p2: "Notre promesse : une expérience fluide — de la découverte au paiement — avec un service client réactif et des retours faciles sous 30 jours.",
     about_p3: "Nous privilégions une production responsable et des partenaires certifiés. Chaque saison, nous itérons sur les coupes, les textures et le confort.",
     about_values: "Nos piliers",
@@ -221,8 +221,8 @@ export const STR = {
 
   en: {
     // Brand
-    brand: "LuxeMode",
-    tagline: "Elegance Redefined",
+    brand: "Maison Wanél",
+    tagline: "The imagined wardrobe",
 
     // Navigation
     nav_shop: "Shop",
@@ -356,9 +356,9 @@ export const STR = {
     continue_shopping_btn: "Continue shopping",
 
     // About
-    about_title: "About LuxeMode",
+    about_title: "About Maison Wanél",
     about_subtitle: "Quality. Design. Trust. We craft modern essentials built to last.",
-    about_p1: "Founded in Montreal, LuxeMode delivers timeless pieces made with premium materials and obsessive attention to detail.",
+    about_p1: "Maison Wanél is a fictional e-commerce concept created by Wanil Parfait to showcase his React and interface design work.",
     about_p2: "Our promise: a seamless experience from discovery to checkout — with responsive support and hassle-free 30-day returns.",
     about_p3: "We focus on responsible production and certified partners. Each season we iterate on fit, textures and comfort.",
     about_values: "Our pillars",

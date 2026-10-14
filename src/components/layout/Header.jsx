@@ -152,13 +152,13 @@ export default function Header() {
       >
         <div className="container-luxe">
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-3 group" aria-label="LuxeMode — Accueil">
+            <Link to="/" className="flex items-center gap-3 group" aria-label="Maison Wanél — Accueil">
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
                 className="w-11 h-11 rounded-xl flex items-center justify-center font-serif font-bold text-lg shadow-lg border bg-gradient-to-br from-accent to-accent-dark text-luxury-noir border-accent/40"
               >
-                LM
+                W
               </motion.div>
               <div className="hidden sm:block">
                 <div className="text-xl font-serif font-bold tracking-tight text-white">

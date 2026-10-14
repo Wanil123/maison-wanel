@@ -44,7 +44,7 @@ export default function Hero() {
             <div className="absolute inset-0 bg-gradient-to-t from-luxury-noir/70 via-transparent to-transparent" aria-hidden="true" />
             <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.22em] text-accent-light">LuxeMode / 01</p>
+                <p className="text-xs uppercase tracking-[0.22em] text-accent-light">Maison Wanél / 01</p>
                 <p className="mt-2 font-serif text-2xl sm:text-3xl">{fr ? "Une allure à soi" : "Style of your own"}</p>
               </div>
               <a href="#products" aria-label={fr ? "Voir la collection" : "View collection"} className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-luxury-noir hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">

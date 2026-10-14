@@ -69,7 +69,7 @@ export default function Product() {
     product
       ? {
           title: `${product.name[lang]} — ${product.category[lang]}`,
-          description: lang === "fr" ? `Produit fictif du concept LuxeMode : ${product.name.fr}.` : `Sample product from the LuxeMode concept: ${product.name.en}.`,
+          description: lang === "fr" ? `Produit fictif du concept Maison Wanél : ${product.name.fr}.` : `Sample product from the Maison Wanél concept: ${product.name.en}.`,
         }
       : { title: lang === "fr" ? "Produit introuvable" : "Product not found" }
   );
@@ -322,8 +322,8 @@ export default function Product() {
               </fieldset>
             )}
 
-            <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <div className="flex items-center border-2 border-gray-200 dark:border-luxury-charcoal rounded-xl" aria-label={T.quantity}>
+            <div className="grid grid-cols-1 sm:grid-cols-[auto_minmax(0,1fr)] gap-3 mb-8">
+              <div className="flex w-full sm:w-auto items-center justify-between border-2 border-gray-200 dark:border-luxury-charcoal rounded-xl" aria-label={T.quantity}>
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -351,7 +351,7 @@ export default function Product() {
                 icon={ShoppingBag}
                 onClick={handleAddToCart}
                 disabled={!product.inStock}
-                className="flex-1"
+                className="w-full min-w-0"
               >
                 {T.add_to_cart}
               </Button>
@@ -361,6 +361,7 @@ export default function Product() {
                 size="lg"
                 onClick={handleBuyNow}
                 disabled={!product.inStock}
+                className="w-full sm:col-span-2"
               >
                 {T.buy_now}
               </Button>

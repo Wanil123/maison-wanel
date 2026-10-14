@@ -25,7 +25,7 @@ const ensureLink = (rel, href) => {
 export default function usePageMeta({ title, description, canonical } = {}) {
   useEffect(() => {
     if (title) {
-      document.title = title.endsWith("LuxeMode") ? title : `${title} — LuxeMode`;
+      document.title = title.endsWith("Maison Wanél") ? title : `${title} — Maison Wanél`;
       ensureMeta('meta[property="og:title"]', { property: "og:title", content: title });
       ensureMeta('meta[name="twitter:title"]', { name: "twitter:title", content: title });
     }

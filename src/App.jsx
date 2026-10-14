@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation, Link, Navigate } from "react-router-dom";
+import { BrowserRouter, HashRouter, Routes, Route, useLocation, Link, Navigate } from "react-router-dom";
 import { AppProvider, useApp } from "./context/AppContext";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
@@ -106,8 +106,9 @@ function NotFound() {
 }
 
 export default function App() {
+  const Router = import.meta.env.BASE_URL === "/" ? BrowserRouter : HashRouter;
   return (
-    <BrowserRouter>
+    <Router>
       <AppProvider>
         <ScrollToTop />
         <Layout>
@@ -128,6 +129,6 @@ export default function App() {
           </Suspense>
         </Layout>
       </AppProvider>
-    </BrowserRouter>
+    </Router>
   );
 }

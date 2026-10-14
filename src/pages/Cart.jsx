@@ -69,8 +69,8 @@ export default function Cart() {
     title: T.cart,
     description:
       lang === "fr"
-        ? "Consultez votre panier LuxeMode et essayez le récapitulatif de démonstration."
-        : "Review your LuxeMode cart and try the demo summary.",
+        ? "Consultez votre panier Maison Wanél et essayez le récapitulatif de démonstration."
+        : "Review your Maison Wanél cart and try the demo summary.",
   });
 
   if (cart.length === 0) {

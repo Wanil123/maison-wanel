@@ -15,8 +15,8 @@ export default function Wishlist() {
     title: T.nav_wishlist,
     description:
       lang === "fr"
-        ? "Vos pièces favorites LuxeMode. Retrouvez-les ici et ajoutez-les au panier en un clic."
-        : "Your favorite LuxeMode pieces. Find them here and add them to cart in one click.",
+        ? "Vos pièces favorites Maison Wanél. Retrouvez-les ici et ajoutez-les au panier en un clic."
+        : "Your favorite Maison Wanél pieces. Find them here and add them to cart in one click.",
   });
 
   const handleMoveAllToCart = () => {

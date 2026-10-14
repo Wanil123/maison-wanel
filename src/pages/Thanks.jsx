@@ -38,7 +38,7 @@ export default function Thanks() {
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">{fr ? "Parcours terminé" : "Flow complete"}</p>
         <h1 className="mt-3 font-serif text-3xl sm:text-4xl text-gray-900 dark:text-white">{fr ? "Simulation réussie" : "Demo completed"}</h1>
         <p className="mx-auto mt-5 max-w-lg text-gray-600 dark:text-gray-300">
-          {fr ? "Tu as terminé le parcours de démonstration LuxeMode. Aucun paiement n’a été effectué et aucune commande n’a été créée ou expédiée." : "You completed the LuxeMode demo flow. No payment was made, and no real order was created or shipped."}
+          {fr ? "Tu as terminé le parcours de démonstration Maison Wanél. Aucun paiement n’a été effectué et aucune commande n’a été créée ou expédiée." : "You completed the Maison Wanél demo flow. No payment was made, and no real order was created or shipped."}
         </p>
         <div className="mx-auto mt-8 max-w-sm rounded-2xl bg-[#f6f0eb] p-5 text-left text-sm dark:bg-luxury-noir/40">
           <p className="flex justify-between gap-4"><span>{fr ? "Référence de démo" : "Demo reference"}</span><strong>{result.orderNumber}</strong></p>
